@@ -1,0 +1,28 @@
+# chache files
+*.DS_Store
+**/.idea/*
+**/__pycache__/*
+cookie
+
+# venv
+**/.venv/*
+
+# raw data
+*.npy
+*.npz
+*.tar.gz
+
+# output data
+*.png
+*.gif
+**/loss/*
+*.pth
+*.pt
+*.ckpt
+**/outputs/*
+**/reports/*
+*.txt
+nohup.out
+
+# linter
+**/.mypy_cache/*
