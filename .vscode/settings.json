@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
+        "isort",
+        "mypy",
         "pygame",
         "pymunk"
     ]
