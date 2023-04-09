@@ -1,0 +1,39 @@
+screen:
+    width: 300
+    height: 240
+    fps: 60
+    color: white
+
+tracker:
+    radius: 10
+    color: blue
+    velocity: 100
+
+objects:
+    - 
+        radius: 30
+        color: red
+    - 
+        radius: 30
+        color: green
+    
+    - 
+        radius: 30
+        color: yellow
+
+save:
+    fps: 5
+    length: 100
+
+replay:
+    fps: 5
+    tracker:
+        initial_position:
+            - 150
+            - 120
+    objects:
+        radius: 30
+        color: red
+        initial_position:
+            - 20
+            - 120

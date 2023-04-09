@@ -1,7 +1,11 @@
 {
     "cSpell.words": [
+        "colordict",
         "isort",
+        "KEYDOWN",
         "mypy",
+        "nopep",
+        "omegaconf",
         "pygame",
         "pymunk"
     ]

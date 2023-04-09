@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "push2d-toydata-env"
+name = "push2d-simulator"
 version = "0.1.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
@@ -14,6 +14,7 @@ numpy = "^1.24.2"
 pymunk = "^6.4.0"
 pygame = "^2.3.0"
 hydra-core = "^1.3.2"
+natsort = "^8.3.1"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.2"
@@ -43,15 +44,15 @@ line-length = 79
 [tool.mypy]
 python_version = 3.9
 check_untyped_defs = true
-disallow_any_decorated = true
-disallow_any_generics = true
-disallow_any_unimported = true
+disallow_any_decorated = false
+disallow_any_generics = false
+disallow_any_unimported = false
 disallow_incomplete_defs = true
 disallow_subclassing_any = true
 disallow_untyped_decorators = true
 disallow_untyped_defs = true
 ignore_errors = false
-ignore_missing_imports = false
+ignore_missing_imports = true
 no_implicit_optional = true
 show_error_codes = true
 strict_equality = true
