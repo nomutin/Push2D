@@ -16,10 +16,24 @@ objects:
     - 
         radius: 30
         color: green
+    
+    - 
+        radius: 30
+        color: yellow
 
 save:
     fps: 5
-    length: 300
+    length: 100
 
 replay:
     fps: 5
+    tracker:
+        initial_position:
+            - 150
+            - 120
+    objects:
+        radius: 30
+        color: red
+        initial_position:
+            - 20
+            - 120

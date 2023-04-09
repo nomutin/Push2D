@@ -4,6 +4,8 @@
         "isort",
         "KEYDOWN",
         "mypy",
+        "nopep",
+        "omegaconf",
         "pygame",
         "pymunk"
     ]

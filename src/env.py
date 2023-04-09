@@ -2,6 +2,7 @@ from random import randint
 
 import pygame
 from omegaconf import DictConfig
+import numpy as np
 
 from components import Circle, Space, mouse_track
 from utils import Keys
@@ -45,6 +46,8 @@ class Env:
         self.space.add_segments()
 
     def save(self) -> None:
+        # TODO: Refactor
+        self.recording = False
         while True:
             for event in pygame.event.get():
                 if Keys.is_quit(event) or Keys.is_q(event):
@@ -59,6 +62,7 @@ class Env:
                 x_limit=self.config.screen.width,
                 y_limit=self.config.screen.height,
             )
+
             self.space.step()
 
     def test(self) -> None:
