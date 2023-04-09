@@ -3,26 +3,26 @@ from random import randint
 import hydra
 import pygame
 from omegaconf import DictConfig
-
+from pygame.event import Event
 
 from components import Circle, Space, mouse_track
 
 
 class Keys:
     @classmethod
-    def is_quit(cls, event) -> bool:
+    def is_quit(cls, event: Event) -> bool:
         return event.type == pygame.QUIT
 
     @staticmethod
-    def is_key(event) -> bool:
+    def is_key(event: Event) -> bool:
         return event.type == pygame.KEYDOWN
 
     @classmethod
-    def is_q(cls, event) -> bool:
+    def is_q(cls, event: Event) -> bool:
         return cls.is_key(event) and event.key == pygame.K_q
 
     @classmethod
-    def is_r(cls, event) -> bool:
+    def is_r(cls, event: Event) -> bool:
         return cls.is_key(event) and event.key == pygame.K_r
 
 
@@ -39,7 +39,6 @@ class Env:
         self.reset()
 
     def reset(self) -> None:
-
         self.space.space.remove(*self.space.space.bodies)
         self.space.space.remove(*self.space.space.shapes)
 
