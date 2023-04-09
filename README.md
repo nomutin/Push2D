@@ -1,4 +1,4 @@
-# push2d-toydata-env
+# Push2D-Simulator
 
 ![platform](https://img.shields.io/badge/platform-X11-blue)
 ![python39](https://img.shields.io/badge/python-3.9-blue)
@@ -11,17 +11,9 @@
 
 ### Install
 
-- local
-
-    ```shell
-    poetry install
-    ```
-
-- pip
-
-    ```shell
-    未実装
-    ```
+```shell
+未実装
+```
 
 ### Collect Data
 
