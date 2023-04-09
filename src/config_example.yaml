@@ -16,3 +16,10 @@ objects:
     - 
         radius: 30
         color: green
+
+save:
+    fps: 5
+    length: 300
+
+replay:
+    fps: 5

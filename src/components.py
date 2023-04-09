@@ -10,11 +10,34 @@ from pymunk import Vec2d
 
 @dataclasses.dataclass
 class Circle:
+    """
+    A class to represent a circle object with physics properties.
+
+    Attributes
+    ----------
+    radius : int
+        The radius of the circle.
+    position : Tuple[int,int]
+        The (x,y) coordinates of the center of the circle.
+    color : str
+        The colo name of the circle in pygame.colordict.
+
+    Methods
+    -------
+    __post_init__()
+        This method is called after the object has been initialized
+        and creates a pymunk physics body and shape for the circle with a
+        given position, radius, and color.
+    """
+
     radius: int
     position: Tuple[int, int]
     color: str
 
     def __post_init__(self) -> None:
+        """
+        Create a pymunk Body and Shape for the circle and set its properties.
+        """
         self.body = pymunk.Body()
         self.body.position = self.position
         self.shape = pymunk.Circle(self.body, self.radius)
@@ -25,6 +48,25 @@ class Circle:
 def mouse_track(
     tracker: Circle, velocity: float, x_limit: int, y_limit: int
 ) -> None:
+    """
+    Using the physics engine pymunk, the Circle object (tracker) is
+    given a velocity vector to move it toward the mouse position.
+
+    Parameters
+    ----------
+    tracker : Circle
+        The Circle object to be moved.
+    velocity : float
+        The velocity at which the tracker should move.
+    x_limit : int
+        The maximum x-coordinate to which the tracker can move.
+    y_limit : int
+        The maximum y-coordinate to which the tracker can move.
+
+    Returns
+    -------
+    None
+    """
     mouse_position = pygame.mouse.get_pos()
     mouse_x = np.clip(mouse_position[0], 10, x_limit - 10)
     mouse_y = np.clip(mouse_position[1], 10, y_limit - 10)
@@ -36,12 +78,50 @@ def mouse_track(
 
 @dataclasses.dataclass
 class Space:
+    """
+    A class that represents a 2D space simulation.
+
+    Attributes
+    ----------
+    width : int
+        The width of the simulation window.
+    height : int
+        The height of the simulation window.
+    fps : int
+        The flame refresh rate of the simulation window.
+    color : str
+        The color of the simulation window.
+
+    Methods
+    -------
+    add(circle: Circle) -> None
+        Add a circular object to the simulation space along with its
+        supporting pivot and gear constraints.
+    clear() -> None
+        Remove all objects from the simulation space.
+    step() -> None
+        Apply one step of the physics simulation, clearing the screen
+        and rendering the updated state of the simulation.
+    add_segments() -> None
+        Create a set of static segments around the edge of the simulation
+        space.
+
+    Notes
+    -----
+    This class uses the Pymunk physics engine to simulate the physical behavior
+    of objects in 2D space, and the Pygame library to render the simulation
+    to the screen.
+    """
+
     width: int
     height: int
     fps: int
     color: str
 
     def __post_init__(self) -> None:
+        """
+        Initialize the Pygame screen, physics space, and rendering options.
+        """
         self.space = pymunk.Space()
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
@@ -49,6 +129,15 @@ class Space:
         self.draw_options.flags = pymunk.SpaceDebugDrawOptions.DRAW_SHAPES
 
     def add(self, circle: Circle) -> None:
+        """
+        Add a circular object to the simulation space and connect it to a pivot
+        and gear joint for more realistic physics.
+
+        Parameters
+        ----------
+        circle : Circle
+            The circular object to add to the simulation space.
+        """
         self.space.add(circle.body, circle.shape)
 
         static_body = self.space.static_body
@@ -63,7 +152,19 @@ class Space:
         gear.max_bias = 0  # disable joint correction
         gear.max_force = 5000  # emulate angular friction
 
+    def clear(self) -> None:
+        """
+        Remove all objects from the simulation space.
+        """
+        self.space.remove(*self.space.bodies)
+        self.space.remove(*self.space.constraints)
+        self.space.remove(*self.space.shapes)
+
     def step(self) -> None:
+        """
+        Apply one step of the physics simulation, clear the screen,
+        and render the updated state of the simulation.
+        """
         self.screen.fill(self.color)
         self.space.debug_draw(self.draw_options)
         pygame.display.flip()
@@ -71,7 +172,11 @@ class Space:
         self.clock.tick(self.fps)
 
     def add_segments(self) -> None:
-        # Create segments around the edge of the screen.
+        """
+        Create a set of static segments around the edge of the simulation
+        space to create walls.
+        """
+
         def wall(a: Tuple[int, int], b: Tuple[int, int]) -> None:
             wall = pymunk.Segment(self.space.static_body, a, b, 1)
             wall.elasticity = 1.0

@@ -2,32 +2,14 @@ from random import randint
 
 import pygame
 from omegaconf import DictConfig
-from pygame.event import Event
 
 from components import Circle, Space, mouse_track
-
-
-class Keys:
-    @classmethod
-    def is_quit(cls, event: Event) -> bool:
-        return event.type == pygame.QUIT
-
-    @staticmethod
-    def is_key(event: Event) -> bool:
-        return event.type == pygame.KEYDOWN
-
-    @classmethod
-    def is_q(cls, event: Event) -> bool:
-        return cls.is_key(event) and event.key == pygame.K_q
-
-    @classmethod
-    def is_r(cls, event: Event) -> bool:
-        return cls.is_key(event) and event.key == pygame.K_r
+from utils import Keys
 
 
 class Env:
     def __init__(self, config: DictConfig) -> None:
-        pygame.display.init()
+        pygame.display.set_caption("[r]:Reset [s]:Save [q]:Quit ")
         self.config = config
         self.space = Space(
             width=config.screen.width,
@@ -35,31 +17,32 @@ class Env:
             fps=config.screen.fps,
             color=config.screen.color,
         )
-
+        self.objects = []
         self.reset()
 
     def reset(self) -> None:
-        self.space.space.remove(*self.space.space.bodies)
-        self.space.space.remove(*self.space.space.shapes)
+        self.space.clear()
 
         self.tracker = Circle(
             radius=self.config.tracker.radius,
             color=self.config.tracker.color,
-            position=(1, 1),
+            position=(
+                self.config.screen.width // 2,
+                self.config.screen.height // 2,
+            ),
         )
         self.space.add(self.tracker)
+
         for obj in self.config.objects:
             x = randint(obj.radius, self.config.screen.width - obj.radius)
             y = randint(obj.radius, self.config.screen.height - obj.radius)
             circle = Circle(
                 radius=obj.radius, color=obj.color, position=(x, y)
             )
+            self.objects.append(circle)
             self.space.add(circle)
 
         self.space.add_segments()
-
-        print(self.space.space.bodies)
-        print(self.space.space.shapes)
 
     def save(self) -> None:
         while True:
@@ -78,5 +61,5 @@ class Env:
             )
             self.space.step()
 
-    def rollout(self) -> None:
+    def test(self) -> None:
         pass
