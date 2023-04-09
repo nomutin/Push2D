@@ -1,6 +1,5 @@
 from random import randint
 
-import hydra
 import pygame
 from omegaconf import DictConfig
 from pygame.event import Event
@@ -28,7 +27,7 @@ class Keys:
 
 class Env:
     def __init__(self, config: DictConfig) -> None:
-        pygame.init()
+        pygame.display.init()
         self.config = config
         self.space = Space(
             width=config.screen.width,
@@ -36,6 +35,7 @@ class Env:
             fps=config.screen.fps,
             color=config.screen.color,
         )
+
         self.reset()
 
     def reset(self) -> None:
@@ -80,13 +80,3 @@ class Env:
 
     def rollout(self) -> None:
         pass
-
-
-@hydra.main(config_path=".", config_name="config_example", version_base=None)
-def main(config: DictConfig) -> None:
-    env = Env(config)
-    env.save()
-
-
-if __name__ == "__main__":
-    main()
