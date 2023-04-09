@@ -2,7 +2,6 @@ from random import randint
 
 import pygame
 from omegaconf import DictConfig
-import numpy as np
 
 from components import Circle, Space, mouse_track
 from utils import Keys
@@ -18,7 +17,6 @@ class Env:
             fps=config.screen.fps,
             color=config.screen.color,
         )
-        self.objects = []
         self.reset()
 
     def reset(self) -> None:
@@ -40,7 +38,6 @@ class Env:
             circle = Circle(
                 radius=obj.radius, color=obj.color, position=(x, y)
             )
-            self.objects.append(circle)
             self.space.add(circle)
 
         self.space.add_segments()
