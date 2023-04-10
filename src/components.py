@@ -1,10 +1,12 @@
 import dataclasses
+from random import randint
 from typing import Tuple
 
 import numpy as np
 import pygame
 import pymunk
 import pymunk.pygame_util
+from omegaconf import DictConfig
 from pymunk import Vec2d
 
 
@@ -43,6 +45,42 @@ class Circle:
         self.shape = pymunk.Circle(self.body, self.radius)
         self.shape.mass = 1.0
         self.shape.color = pygame.Color(self.color)
+
+    @classmethod
+    def from_dictconfig(cls, cfg: DictConfig) -> "Circle":
+        """
+        Create a Circle object from a dictionary-like configuration object
+
+        Parameters
+        ----------
+        cfg : DictConfig
+            A DictConfig object containing the configuration of the circle.
+            It should have the following keys:
+            - radius: an int representing the radius of the circle
+            - position: a tuple of two ints representing the (x,y) coordinate.
+                If the "position" key is not provided, then the (x,y)
+                coordinates will be randomly generated using the "screen_width"
+                and  "screen_height" keys in the configuration object.
+            - color: a string representing the color  of the circle in pygame.
+
+        Returns
+        -------
+        Circle
+            A Circle object with properties specified in the `cfg`.
+        """
+        if "position" in cfg:
+            x, y = cfg.position
+        elif "screen_width" in cfg and "screen_height" in cfg:
+            x = randint(cfg.radius, cfg.screen_width - cfg.radius)
+            y = randint(cfg.radius, cfg.screen_height - cfg.radius)
+        else:
+            raise NotImplementedError
+
+        return Circle(
+            radius=cfg.radius,
+            position=(x, y),
+            color=cfg.color,
+        )
 
 
 def mouse_track(
@@ -187,3 +225,25 @@ class Space:
         wall(a=(1, 0), b=(1, self.height))
         wall(a=(self.width - 1, 0), b=(self.width - 1, self.height))
         wall(a=(0, self.height - 1), b=(self.width, self.height - 1))
+
+    @classmethod
+    def from_dictconfig(cls, config: DictConfig) -> "Space":
+        """
+        Create a new instance of Space from a DictConfig object.
+
+        Parameters
+        ----------
+        config : DictConfig
+            A DictConfig object with keys "width", "height", "fps", and "color"
+
+        Returns
+        -------
+        Space
+            A new instance of Space
+        """
+        return Space(
+            width=config.width,
+            height=config.height,
+            fps=config.fps,
+            color=config.color,
+        )
