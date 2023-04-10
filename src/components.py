@@ -1,10 +1,12 @@
 import dataclasses
+from random import randint
 from typing import Tuple
 
 import numpy as np
 import pygame
 import pymunk
 import pymunk.pygame_util
+from omegaconf import DictConfig
 from pymunk import Vec2d
 
 
@@ -43,6 +45,22 @@ class Circle:
         self.shape = pymunk.Circle(self.body, self.radius)
         self.shape.mass = 1.0
         self.shape.color = pygame.Color(self.color)
+
+    @classmethod
+    def from_dictconfig(cls, cfg: DictConfig) -> "Circle":
+        if "position" in cfg:
+            x, y = cfg.position
+        elif "screen_width" in cfg and "screen_height" in cfg:
+            x = randint(cfg.radius, cfg.screen_width - cfg.radius)
+            y = randint(cfg.radius, cfg.screen_height - cfg.radius)
+        else:
+            raise NotImplementedError
+
+        return Circle(
+            radius=cfg.radius,
+            position=(x, y),
+            color=cfg.color,
+        )
 
 
 def mouse_track(
@@ -187,3 +205,12 @@ class Space:
         wall(a=(1, 0), b=(1, self.height))
         wall(a=(self.width - 1, 0), b=(self.width - 1, self.height))
         wall(a=(0, self.height - 1), b=(self.width, self.height - 1))
+
+    @classmethod
+    def from_dictconfig(cls, config: DictConfig) -> "Space":
+        return Space(
+            width=config.width,
+            height=config.height,
+            fps=config.fps,
+            color=config.color,
+        )

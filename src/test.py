@@ -10,7 +10,7 @@ def main(config: DictConfig) -> None:
     from env import Env  # nopep8
 
     env = Env(config)
-    env.save()
+    env.follow()
 
 
 if __name__ == "__main__":

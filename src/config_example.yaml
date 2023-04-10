@@ -8,32 +8,25 @@ tracker:
     radius: 10
     color: blue
     velocity: 100
+    position:
+        - 150
+        - 120
 
 objects:
     - 
         radius: 30
         color: red
+        position:
+            - 50
+            - 50
     - 
         radius: 30
         color: green
-    
-    - 
-        radius: 30
-        color: yellow
+        position:
+            - 200
+            - 180
 
 save:
     fps: 5
-    length: 100
+    length: 40
 
-replay:
-    fps: 5
-    tracker:
-        initial_position:
-            - 150
-            - 120
-    objects:
-        radius: 30
-        color: red
-        initial_position:
-            - 20
-            - 120

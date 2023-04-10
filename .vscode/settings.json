@@ -4,9 +4,11 @@
         "isort",
         "KEYDOWN",
         "mypy",
+        "ndarray",
         "nopep",
         "omegaconf",
         "pygame",
-        "pymunk"
+        "pymunk",
+        "surfarray"
     ]
 }

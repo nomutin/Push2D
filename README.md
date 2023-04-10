@@ -1,7 +1,7 @@
 # Push2D-Simulator
 
 ![platform](https://img.shields.io/badge/platform-X11-blue)
-![python39](https://img.shields.io/badge/python-3.9-blue)
+![python39](https://img.shields.io/badge/python-3.9%20|%203.10-blue)
 [![black](https://img.shields.io/badge/code%20style-black-black.svg)](https://github.com/psf/black)
 [![lint](https://github.com/nomutin/push2d-toydata-env/actions/workflows/lint.yml/badge.svg)](https://github.com/nomutin/push2d-toydata-env/actions/workflows/lint.yml)
 
