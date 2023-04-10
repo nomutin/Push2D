@@ -18,10 +18,10 @@ class Env:
         pygame.key.set_repeat(1000 // cfg.save.fps, 1000 // cfg.save.fps)
         self.cfg = cfg
         self.space = Space.from_dictconfig(cfg.screen)
-        self.reset()
 
         self.actions: List[np.ndarray] = []
         self.observations: List[np.ndarray] = []
+        self.reset()
 
     def reset(self) -> None:
         self.space.clear()
@@ -34,6 +34,10 @@ class Env:
             self.space.add(circle)
 
         self.space.add_segments()
+
+        self.actions.clear()
+        self.observations.clear()
+        pygame.display.set_caption(self.default_caption)
 
     def follow(self) -> None:
         while True:
@@ -69,8 +73,14 @@ class Env:
         now = datetime.datetime.now()
         dirname = os.path.join("data", f"{now.month}_{now.day}_{now.hour}")
         os.makedirs(dirname, exist_ok=True)
+
         num = len(glob.glob(f"{dirname}/*_[0-9]*.npy")) // 2
         action_path = f"{dirname}/raw_action_{num}.npy"
-        obs_path = f"{dirname}/raw_observation_{num}.npy"
+        observation_path = f"{dirname}/raw_observation_{num}.npy"
+
         np.save(action_path, np.stack(self.actions))
-        np.save(obs_path, np.stack(self.observations))
+        np.save(observation_path, np.stack(self.observations))
+
+        self.actions.clear()
+        self.observations.clear()
+        pygame.display.set_caption(self.default_caption)

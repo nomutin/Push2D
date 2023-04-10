@@ -48,6 +48,26 @@ class Circle:
 
     @classmethod
     def from_dictconfig(cls, cfg: DictConfig) -> "Circle":
+        """
+        Create a Circle object from a dictionary-like configuration object
+
+        Parameters
+        ----------
+        cfg : DictConfig
+            A DictConfig object containing the configuration of the circle.
+            It should have the following keys:
+            - radius: an int representing the radius of the circle
+            - position: a tuple of two ints representing the (x,y) coordinate.
+                If the "position" key is not provided, then the (x,y)
+                coordinates will be randomly generated using the "screen_width"
+                and  "screen_height" keys in the configuration object.
+            - color: a string representing the color  of the circle in pygame.
+
+        Returns
+        -------
+        Circle
+            A Circle object with properties specified in the `cfg`.
+        """
         if "position" in cfg:
             x, y = cfg.position
         elif "screen_width" in cfg and "screen_height" in cfg:
@@ -208,6 +228,19 @@ class Space:
 
     @classmethod
     def from_dictconfig(cls, config: DictConfig) -> "Space":
+        """
+        Create a new instance of Space from a DictConfig object.
+
+        Parameters
+        ----------
+        config : DictConfig
+            A DictConfig object with keys "width", "height", "fps", and "color"
+
+        Returns
+        -------
+        Space
+            A new instance of Space
+        """
         return Space(
             width=config.width,
             height=config.height,
