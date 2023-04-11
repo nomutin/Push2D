@@ -7,7 +7,7 @@ import numpy as np
 import pygame
 from omegaconf import DictConfig
 
-from components import Circle, Space, mouse_track
+from components import Circle, Space, mouse_track, rollout
 from utils import Keys
 
 
@@ -47,11 +47,12 @@ class Env:
                 if Keys.is_r(event):
                     self.reset()
                 if Keys.is_s(event):
-                    self.get_states()
+                    self.actions.append(self.get_action())
+                    self.observations.append(self.get_observation())
                     caption = f"{len(self.actions)}/{self.cfg.save.length} "
                     pygame.display.set_caption(caption)
                     if len(self.actions) == self.cfg.save.length:
-                        self.save_states()
+                        self.save()
 
             mouse_track(
                 tracker=self.tracker,
@@ -61,15 +62,16 @@ class Env:
             )
             self.space.step()
 
-    def get_states(self) -> None:
+    def get_observation(self) -> np.ndarray:
+        surface = pygame.surfarray.array3d(self.space.screen)
+        return surface.transpose(1, 0, 2)
+
+    def get_action(self) -> np.ndarray:
         x = int(self.tracker.body.position[0])
         y = int(self.tracker.body.position[1])
-        action = np.array([x, y])
-        observation = pygame.surfarray.array3d(self.space.screen)
-        self.actions.append(action)
-        self.observations.append(observation)
+        return np.array([x, y])
 
-    def save_states(self) -> None:
+    def save(self) -> None:
         now = datetime.datetime.now()
         dirname = os.path.join("data", f"{now.month}_{now.day}_{now.hour}")
         os.makedirs(dirname, exist_ok=True)
@@ -84,3 +86,14 @@ class Env:
         self.actions.clear()
         self.observations.clear()
         pygame.display.set_caption(self.default_caption)
+
+    def replay(self, action: np.ndarray) -> None:
+        assert action.shape == (2,)
+        span = self.cfg.screen.fps // self.cfg.save.fps
+        for _ in range(span):
+            rollout(
+                tracker=self.tracker,
+                action=action,
+                velocity=self.cfg.tracker.velocity,
+            )
+            self.space.step()
