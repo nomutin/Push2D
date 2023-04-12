@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"
+include = ["pyproject.toml", "push2d_simulator.py"]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
@@ -12,7 +13,6 @@ pygame = "^2.3.0"
 pymunk = "^6.4.0"
 omegaconf = "^2.3.0"
 pytest-cov = "^4.0.0"
-
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"
@@ -24,7 +24,6 @@ autopep8 = "^2.0.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
 
 [tool.flake8]
 extend-ignore = "E203,"
