@@ -12,7 +12,34 @@ from utils import Keys
 
 
 class Env:
+    """
+    The class represents an environment for the pushing object simulation.
+
+    Attributes
+    ----------
+    default_caption: str
+        The default window caption.
+    cfg: DictConfig
+        The configuration dictionary containing the game parameters.
+    space: Space
+        The space containing the pymunk field attributes.
+    actions: List[np.ndarray]
+        A list of actions(positions) taken by the agent.
+    observations: List[np.ndarray]
+        A list of observations received by the agent.
+    tracker: Circle
+        The tracker object.
+    """
+
     def __init__(self, cfg: DictConfig) -> None:
+        """
+        Initializes the Env class.
+
+        Parameters
+        ----------
+        cfg: DictConfig
+            The configuration dictionary containing the game parameters.
+        """
         self.default_caption = "[r]:Reset [s]:Save [q]:Quit "
         pygame.display.set_caption(self.default_caption)
         pygame.key.set_repeat(1000 // cfg.save.fps, 1000 // cfg.save.fps)
@@ -24,6 +51,9 @@ class Env:
         self.reset()
 
     def reset(self) -> None:
+        """
+        Resets the environment.
+        """
         self.space.clear()
 
         self.tracker = Circle.from_dictconfig(self.cfg.tracker)
@@ -40,6 +70,10 @@ class Env:
         pygame.display.set_caption(self.default_caption)
 
     def follow(self) -> None:
+        """
+        The main loop.
+        It listens for player's input and updates the state accordingly.
+        """
         while True:
             for event in pygame.event.get():
                 if Keys.is_quit(event) or Keys.is_q(event):
@@ -63,15 +97,33 @@ class Env:
             self.space.step()
 
     def get_observation(self) -> np.ndarray:
+        """
+        Returns the current observation.
+
+        Returns
+        -------
+        np.ndarray
+            An array containing the current observation state.
+        """
         surface = pygame.surfarray.array3d(self.space.screen)
-        return surface.transpose(1, 0, 2)
+        return np.transpose(surface, (1, 0, 2))
 
     def get_action(self) -> np.ndarray:
-        x = int(self.tracker.body.position[0])
-        y = int(self.tracker.body.position[1])
+        """
+        Returns the current action.
+
+        Returns
+        -------
+        np.ndarray
+            An array containing the current action state(position).
+        """
+        x, y = map(int, self.tracker.body.position)
         return np.array([x, y])
 
     def save(self) -> None:
+        """
+        Saves the observation/action states.
+        """
         now = datetime.datetime.now()
         dirname = os.path.join("data", f"{now.month}_{now.day}_{now.hour}")
         os.makedirs(dirname, exist_ok=True)
@@ -88,6 +140,14 @@ class Env:
         pygame.display.set_caption(self.default_caption)
 
     def replay(self, action: np.ndarray) -> None:
+        """
+        Plays a saved action.
+
+        Parameters
+        ----------
+        action: np.ndarray
+            The saved action.
+        """
         assert action.shape == (2,)
         span = self.cfg.screen.fps // self.cfg.save.fps
         for _ in range(span):
