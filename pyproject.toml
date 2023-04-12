@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "push2d-simulator"
+name = "push2d_simulator"
 version = "0.1.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
