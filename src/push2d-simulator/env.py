@@ -5,9 +5,8 @@ from typing import List
 
 import numpy as np
 import pygame
-from omegaconf import DictConfig
-
 from components import Circle, Space, mouse_track, rollout
+from omegaconf import DictConfig
 from utils import Keys
 
 __all__ = ["Env"]
