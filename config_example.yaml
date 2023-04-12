@@ -7,7 +7,7 @@ screen:
 tracker:
     radius: 10
     color: blue
-    velocity: 180
+    velocity: 80
     position:
         - 150
         - 120
