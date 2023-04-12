@@ -85,19 +85,6 @@ pycodestyle = ">=2.10.0,<2.11.0"
 pyflakes = ">=3.0.0,<3.1.0"
 
 [[package]]
-name = "hydra-core"
-version = "1.3.2"
-description = "A framework for elegantly configuring complex applications"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-antlr4-python3-runtime = ">=4.9.0,<4.10.0"
-omegaconf = ">=2.2,<2.4"
-packaging = "*"
-
-[[package]]
 name = "isort"
 version = "5.12.0"
 description = "A Python utility / library to sort Python imports."
@@ -170,7 +157,7 @@ PyYAML = ">=5.1.0"
 name = "packaging"
 version = "23.0"
 description = "Core utilities for Python packages"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -278,8 +265,8 @@ python-versions = ">=3.7"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.9"
-content-hash = "407878bfb9e29506dd90f6ab2f37b510d6fb2ce6f2c9c3146ea0c1ab8519d2a4"
+python-versions = ">=3.8.1"
+content-hash = "17ec7b18633756533849f421bececc513282fc755db8a0df2370ddde40baaad0"
 
 [metadata.files]
 antlr4-python3-runtime = [
@@ -393,10 +380,6 @@ colorama = [
 flake8 = [
     {file = "flake8-6.0.0-py2.py3-none-any.whl", hash = "sha256:3833794e27ff64ea4e9cf5d410082a8b97ff1a06c16aa3d2027339cd0f1195c7"},
     {file = "flake8-6.0.0.tar.gz", hash = "sha256:c61007e76655af75e6785a931f452915b371dc48f56efd765247c8fe68f2b181"},
-]
-hydra-core = [
-    {file = "hydra-core-1.3.2.tar.gz", hash = "sha256:8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824"},
-    {file = "hydra_core-1.3.2-py3-none-any.whl", hash = "sha256:fa0238a9e31df3373b35b0bfb672c34cc92718d21f81311d8996a16de1141d8b"},
 ]
 isort = [
     {file = "isort-5.12.0-py3-none-any.whl", hash = "sha256:f84c2818376e66cf843d497486ea8fed8700b340f308f076c6fb1229dff318b6"},

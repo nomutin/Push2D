@@ -7,7 +7,7 @@ screen:
 tracker:
     radius: 10
     color: blue
-    velocity: 100
+    velocity: 180
     position:
         - 150
         - 120
@@ -27,6 +27,6 @@ objects:
             - 180
 
 save:
-    fps: 5
-    length: 40
+    fps: 10
+    length: 80
 

@@ -45,6 +45,7 @@ class Circle:
         self.shape = pymunk.Circle(self.body, self.radius)
         self.shape.mass = 1.0
         self.shape.color = pygame.Color(self.color)
+        self.shape.elasticity = 1.0
 
     @classmethod
     def from_dictconfig(cls, cfg: DictConfig) -> "Circle":
@@ -109,6 +110,13 @@ def mouse_track(
     mouse_x = np.clip(mouse_position[0], 10, x_limit - 10)
     mouse_y = np.clip(mouse_position[1], 10, y_limit - 10)
     vector = Vec2d(mouse_x, mouse_y) - tracker.body.position
+    normalized = Vec2d.normalized(vector)
+    x, y = round(normalized[0], 0), round(normalized[1], 0)
+    tracker.body.velocity = Vec2d(x, y) * velocity
+
+
+def rollout(tracker: Circle, action: np.ndarray, velocity: float) -> None:
+    vector = Vec2d(*action) - tracker.body.position
     normalized = Vec2d.normalized(vector)
     x, y = round(normalized[0], 0), round(normalized[1], 0)
     tracker.body.velocity = Vec2d(x, y) * velocity
