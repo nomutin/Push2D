@@ -5,6 +5,7 @@ description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"
 include = ["pyproject.toml", "push2d_simulator.py"]
+packages = [{include = "push2d_simulator", from = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
