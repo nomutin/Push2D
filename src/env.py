@@ -10,6 +10,8 @@ from omegaconf import DictConfig
 from components import Circle, Space, mouse_track, rollout
 from utils import Keys
 
+__all__ = ["Env"]
+
 
 class Env:
     """

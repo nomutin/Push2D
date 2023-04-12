@@ -1,6 +1,8 @@
 import pygame
 from pygame.event import Event
 
+__all__ = ["Keys"]
+
 
 class Keys:
     """

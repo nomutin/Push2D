@@ -9,6 +9,8 @@ import pymunk.pygame_util
 from omegaconf import DictConfig
 from pymunk import Vec2d
 
+__all__ = ["Space", "Circle", "mouse_track", "rollout"]
+
 
 @dataclasses.dataclass
 class Circle:
