@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"
-packages = [{include = "push2d-simulator", from = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
@@ -13,6 +12,9 @@ pygame = "^2.3.0"
 pymunk = "^6.4.0"
 omegaconf = "^2.3.0"
 pytest-cov = "^4.0.0"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"
