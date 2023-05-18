@@ -12,19 +12,28 @@
 ### Install
 
 ```shell
-未実装
+poetry add git+https://github.com/nomutin/push2d-simulator.git
 ```
 
 ### Collect Data
 
 ```shell
-未実装
+from push2d_simulator import Simulator
+
+simulator = Simulator(config)
+simulator.follow()
 ```
 
 ### Action Test
 
 ```shell
-未実装
+from push2d_simulator import Simulator
+
+simulator = Simulator(config)
+for action in action_sequence:
+    simulator.replay(action)
+    current_observation = simulator.get_observation()
+    current_action = simulator.get_action()
 ```
 
 ## References

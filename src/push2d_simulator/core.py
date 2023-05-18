@@ -13,7 +13,7 @@ from omegaconf import DictConfig
 from pymunk import Vec2d
 
 
-class Env:
+class Simulator:
     """
     The class represents an environment for the pushing object simulation.
 
@@ -35,7 +35,7 @@ class Env:
 
     def __init__(self, cfg: DictConfig) -> None:
         """
-        Initializes the Env class.
+        Initializes the simulator class.
 
         Parameters
         ----------
