@@ -17,7 +17,7 @@ poetry add git+https://github.com/nomutin/push2d-simulator.git
 
 ### Collect Data
 
-```shell
+```python
 from push2d_simulator import Simulator
 
 simulator = Simulator(config)
@@ -26,7 +26,7 @@ simulator.follow()
 
 ### Action Test
 
-```shell
+```python
 from push2d_simulator import Simulator
 
 simulator = Simulator(config)
