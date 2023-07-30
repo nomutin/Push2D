@@ -4,32 +4,26 @@ version = "0.1.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"
+packages = [{ include = "core.py", from = "push2d_simulator" }]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
+
+[tool.poetry.group.core]
+optional = true
+[tool.poetry.group.core.dependencies]
 numpy = "^1.24.2"
 pygame = "^2.3.0"
 pymunk = "^6.4.0"
 omegaconf = "^2.3.0"
+mypy = "^1.4.1"
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.group.lint]
+optional = true
+[tool.poetry.group.lint.dependencies]
 isort = "^5.12.0"
 black = "^23.3.0"
-pyproject-flake8 = "^6.0.0.post1"
-autopep8 = "^2.0.2"
-
-[build-system]
-requires = ["poetry-core", "setuptools"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.flake8]
-extend-ignore = "E203,"
-max-complexity = 8
-max-line-length = 79
-exclude =["__pycache__",  ".venv"]
+ruff = "^0.0.280"
 
 [tool.isort]
 profile = "black"
@@ -37,3 +31,39 @@ line_length = 79
 
 [tool.black]
 line-length = 79
+
+[tool.ruff]
+select = ["ALL"]
+ignore = ["D203", "D212", "ANN", "S311"]
+fixable = ["ALL"]
+unfixable = []
+exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv",]
+line-length = 79
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+target-version = "py39"
+
+[tool.mypy]
+python_version = 3.9
+# following setting is same as pysen
+# https://github.com/pfnet/pysen/blob/main/setup.cfg#L12
+check_untyped_defs = true
+disallow_any_decorated = false
+disallow_any_generics = false
+disallow_any_unimported = false
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+ignore_errors = false
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+strict_equality = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+# TODO: turn these into true
+disallow_untyped_calls = false
+warn_return_any = false
