@@ -1,16 +1,22 @@
+"""Simple physics simulator for the pushing object task."""
+
+from __future__ import annotations
+
 import dataclasses
-import datetime
 import glob
-import os
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from random import randint
-from typing import List, Tuple
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pygame
 import pymunk
 import pymunk.pygame_util
-from omegaconf import DictConfig
 from pymunk import Vec2d
+
+if TYPE_CHECKING:
+    from omegaconf import DictConfig, ListConfig
 
 
 class Simulator:
@@ -33,9 +39,9 @@ class Simulator:
         The tracker object.
     """
 
-    def __init__(self, cfg: DictConfig) -> None:
+    def __init__(self, cfg: DictConfig | ListConfig) -> None:
         """
-        Initializes the simulator class.
+        Initialize the simulator class.
 
         Parameters
         ----------
@@ -48,14 +54,12 @@ class Simulator:
         self.cfg = cfg
         self.space = Space.from_dictconfig(cfg.screen)
 
-        self.actions: List[np.ndarray] = []
-        self.observations: List[np.ndarray] = []
+        self.actions: list[np.ndarray] = []
+        self.observations: list[np.ndarray] = []
         self.reset()
 
     def reset(self) -> None:
-        """
-        Resets the environment.
-        """
+        """Reset the environment."""
         self.space.clear()
 
         self.tracker = Circle.from_dictconfig(self.cfg.tracker)
@@ -73,8 +77,9 @@ class Simulator:
 
     def follow(self) -> None:
         """
-        The main loop.
-        It listens for player's input and updates the state accordingly.
+        Execute main loop.
+
+        - It listens for player's input and updates the state accordingly.
         """
         while True:
             for event in pygame.event.get():
@@ -101,7 +106,7 @@ class Simulator:
 
     def get_observation(self) -> np.ndarray:
         """
-        Returns the current observation.
+        Return the current observation.
 
         Returns
         -------
@@ -113,7 +118,7 @@ class Simulator:
 
     def get_action(self) -> np.ndarray:
         """
-        Returns the current action.
+        Return the current action.
 
         Returns
         -------
@@ -124,12 +129,11 @@ class Simulator:
         return np.array([x, y])
 
     def save(self) -> None:
-        """
-        Saves the observation/action states.
-        """
-        now = datetime.datetime.now()
-        dirname = os.path.join("data", f"{now.month}_{now.day}_{now.hour}")
-        os.makedirs(dirname, exist_ok=True)
+        """Save the observation/action states."""
+        jst = timezone(timedelta(hours=+9), "JST")
+        now = datetime.now(tz=jst)
+        dirname = Path("data") / f"{now.month}_{now.day}_{now.hour}"
+        Path(dirname).mkdir(parents=True, exist_ok=True)
 
         num = len(glob.glob(f"{dirname}/*_[0-9]*.npy")) // 2
         action_path = f"{dirname}/raw_action_{num}.npy"
@@ -144,14 +148,17 @@ class Simulator:
 
     def replay(self, action: np.ndarray) -> None:
         """
-        Plays a saved action.
+        Play a saved action.
 
         Parameters
         ----------
         action: np.ndarray
             The saved action.
         """
-        assert action.shape == (2,)
+        if action.shape != (2,):
+            msg = f"Invalid action shape: {action.shape}"
+            raise ValueError(msg)
+
         span = self.cfg.screen.fps // self.cfg.save.fps
         for _ in range(span):
             rollout(
@@ -185,13 +192,11 @@ class Circle:
     """
 
     radius: int
-    position: Tuple[int, int]
+    position: tuple[int, int]
     color: str
 
     def __post_init__(self) -> None:
-        """
-        Create a pymunk Body and Shape for the circle and set its properties.
-        """
+        """Create Body and Shape for the circle and set its properties."""
         self.body = pymunk.Body()
         self.body.position = self.position
         self.shape = pymunk.Circle(self.body, self.radius)
@@ -200,9 +205,9 @@ class Circle:
         self.shape.elasticity = 1.0
 
     @classmethod
-    def from_dictconfig(cls, cfg: DictConfig) -> "Circle":
+    def from_dictconfig(cls, cfg: DictConfig) -> Circle:
         """
-        Create a Circle object from a dictionary-like configuration object
+        Create a Circle object from a dictionary-like configuration object.
 
         Parameters
         ----------
@@ -230,9 +235,14 @@ class Circle:
 
 
 def mouse_track(
-    tracker: Circle, velocity: float, x_limit: int, y_limit: int
+    tracker: Circle,
+    velocity: float,
+    x_limit: int,
+    y_limit: int,
 ) -> None:
     """
+    Give the Circle object to velocity vector.
+
     Using the physics engine pymunk, the Circle object (tracker) is
     given a velocity vector to move it toward the mouse position.
 
@@ -257,6 +267,7 @@ def mouse_track(
 
 
 def rollout(tracker: Circle, action: np.ndarray, velocity: float) -> None:
+    """Rollout the Circle object to the given action."""
     vector = Vec2d(*action) - tracker.body.position
     direction = Vec2d.normalized(vector)
     x, y = round(direction[0], 0), round(direction[1], 0)
@@ -298,7 +309,11 @@ class Space:
 
     def __post_init__(self) -> None:
         """
-        Initialize the Pygame screen, physics space, and rendering options.
+        Initialize contents.
+
+        - Pygame screen
+        - Physics space
+        - Rendering options
         """
         self.space = pymunk.Space()
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -308,8 +323,9 @@ class Space:
 
     def add(self, circle: Circle) -> None:
         """
-        Add a circular object to the simulation space and connect it to a pivot
-        and gear joint for more realistic physics.
+        Add a circular object to the simulation space.
+
+        And Connect it to a pivot and gear joint for more realistic physics.
 
         Parameters
         ----------
@@ -331,17 +347,19 @@ class Space:
         gear.max_force = 5000  # emulate angular friction
 
     def clear(self) -> None:
-        """
-        Remove all objects from the simulation space.
-        """
+        """Remove all objects from the simulation space."""
         self.space.remove(*self.space.bodies)
         self.space.remove(*self.space.constraints)
         self.space.remove(*self.space.shapes)
 
     def step(self) -> None:
         """
-        Apply one step of the physics simulation, clear the screen,
-        and render the updated state of the simulation.
+        Apply one envornment step.
+
+        includes:
+            - One step of the physics simulation
+            - Clear the screen
+            - Render the updated state of the simulation
         """
         self.screen.fill(self.color)
         self.space.debug_draw(self.draw_options)
@@ -350,12 +368,9 @@ class Space:
         self.clock.tick(self.fps)
 
     def add_segments(self) -> None:
-        """
-        Create a set of static segments around the edge of the simulation
-        space to create walls.
-        """
+        """Create static segments around the edge to create walls."""
 
-        def wall(a: Tuple[int, int], b: Tuple[int, int]) -> None:
+        def wall(a: tuple[int, int], b: tuple[int, int]) -> None:
             wall = pymunk.Segment(self.space.static_body, a, b, 1)
             wall.elasticity = 1.0
             wall.color = pygame.Color(self.color)
@@ -367,7 +382,7 @@ class Space:
         wall(a=(0, self.height - 1), b=(self.width, self.height - 1))
 
     @classmethod
-    def from_dictconfig(cls, config: DictConfig) -> "Space":
+    def from_dictconfig(cls, config: DictConfig) -> Space:
         """
         Create a new instance of Space from a DictConfig object.
 
