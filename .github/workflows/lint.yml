@@ -27,7 +27,7 @@ jobs:
       - name: Add path for Poetry
         run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
       - name: Install Dependencies
-        run: poetry install
+        run: poetry install --with core,lint
       - name: Lint with black
         run: poetry run black . --check
       - name: Lint with isort
