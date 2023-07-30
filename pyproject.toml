@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"
+packages = [{ include = "core.py", from = "push2d_simulator" }]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
@@ -21,9 +22,6 @@ autopep8 = "^2.0.2"
 [build-system]
 requires = ["poetry-core", "setuptools"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.setuptools]
-package-dir = {"" = "src"}
 
 [tool.flake8]
 extend-ignore = "E203,"
