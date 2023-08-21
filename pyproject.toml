@@ -1,17 +1,19 @@
 [tool.poetry]
-name = "push2d-simulator"
+name = "push2d"
 version = "0.1.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"
-packages = [{include = "push2d_simulator"}]
+packages = [{include = "push2d"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
 numpy = "^1.24.2"
 pygame = "^2.3.0"
 pymunk = "^6.4.0"
-omegaconf = "^2.3.0"
+nptyping = "^2.5.0"
+typeguard = "^4.1.2"
+gymnasium = "^0.29.1"
 
 [tool.poetry.group.lint]
 optional = true
@@ -30,7 +32,7 @@ line-length = 79
 
 [tool.ruff]
 select = ["ALL"]
-ignore = ["D203", "D212", "ANN", "S311"]
+ignore = ["D203", "D212", "ANN"]
 fixable = ["ALL"]
 unfixable = []
 exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv",]
@@ -39,4 +41,25 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 target-version = "py38"
 
 [tool.mypy]
-python_version = 3.9
+python_version = "3.8"
+check_untyped_defs = true
+disallow_any_decorated = false
+disallow_any_generics = false
+disallow_any_unimported = false
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+ignore_errors = false
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+strict_equality = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+# TODO: turn these into true
+disallow_untyped_calls = false
+warn_return_any = false
