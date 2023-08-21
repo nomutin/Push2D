@@ -8,10 +8,6 @@ packages = [{ include = "core.py", from = "push2d_simulator" }]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
-
-[tool.poetry.group.core]
-optional = true
-[tool.poetry.group.core.dependencies]
 numpy = "^1.24.2"
 pygame = "^2.3.0"
 pymunk = "^6.4.0"
@@ -44,26 +40,3 @@ target-version = "py39"
 
 [tool.mypy]
 python_version = 3.9
-# following setting is same as pysen
-# https://github.com/pfnet/pysen/blob/main/setup.cfg#L12
-check_untyped_defs = true
-disallow_any_decorated = false
-disallow_any_generics = false
-disallow_any_unimported = false
-disallow_incomplete_defs = true
-disallow_subclassing_any = true
-disallow_untyped_decorators = true
-disallow_untyped_defs = true
-ignore_errors = false
-ignore_missing_imports = true
-no_implicit_optional = true
-show_error_codes = true
-strict_equality = true
-strict_optional = true
-warn_redundant_casts = true
-warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
-# TODO: turn these into true
-disallow_untyped_calls = false
-warn_return_any = false
