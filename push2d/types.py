@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from nptyping import Float, Int, NDArray, Shape
+from nptyping import Int, NDArray, Shape
 from pygame import Color
 from pymunk import Vec2d
 
@@ -27,5 +27,9 @@ class CircleParameters:
     velocity: int = 0
 
 
-Act = NDArray[Shape["2"], Float]
+# up, down, left, right
+Act = NDArray[Shape["4"], Int]
 Obs = NDArray[Shape["Width, Height, 3"], Int]
+
+Actions = NDArray[Shape["Length, 4"], Int]
+Observations = NDArray[Shape["Length, Width, Height, 3"], Int]

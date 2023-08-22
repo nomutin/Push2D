@@ -18,15 +18,6 @@ class Circle:
     """
     A class to represent a circle object with physics properties.
 
-    Attributes
-    ----------
-    radius : int
-        The radius of the circle.
-    position : Tuple[int,int]
-        The (x,y) coordinates of the center of the circle.
-    color : str
-        The colo name of the circle in pygame.colordict.
-
     Methods
     -------
     __post_init__()
@@ -47,55 +38,41 @@ class Circle:
         self.shape.elasticity = 1.0
 
 
-@dataclasses.dataclass
-class Space:
+class Space(pymunk.Space):
     """
     A class that represents a 2D space simulation.
 
-    Attributes
-    ----------
-    width : int
-        The width of the simulation window.
-    height : int
-        The height of the simulation window.
-    fps : int
-        The flame refresh rate of the simulation window.
-    color : str
-        The color of the simulation window.
-
     Methods
     -------
-    add(circle: Circle) -> None
+    add_circle(circle: Circle) -> None
         Add a circular object to the simulation space along with its
         supporting pivot and gear constraints.
     clear() -> None
         Remove all objects from the simulation space.
-    step() -> None
+    render() -> None
         Apply one step of the physics simulation, clearing the screen
         and rendering the updated state of the simulation.
     """
 
-    params: SpaceParameters
-
-    def __post_init__(self) -> None:
+    def __init__(self, params: SpaceParameters) -> None:
         """
-        Initialize contents.
+        Initialize Space.
 
         - Pygame screen
         - Physics space
         - Rendering options
         """
-        self.width = self.params.width
-        self.height = self.params.height
-        self.fps = self.params.fps
-        self.color = self.params.color
-        self.space = pymunk.Space()
+        super().__init__()
+        self.width = params.width
+        self.height = params.height
+        self.fps = params.fps
+        self.color = params.color
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
         self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
         self.draw_options.flags = pymunk.SpaceDebugDrawOptions.DRAW_SHAPES
 
-    def add(self, circle: Circle) -> None:
+    def add_circle(self, circle: Circle) -> None:
         """
         Add a circular object to the simulation space.
 
@@ -106,27 +83,27 @@ class Space:
         circle : Circle
             The circular object to add to the simulation space.
         """
-        self.space.add(circle.body, circle.shape)
+        self.add(circle.body, circle.shape)
 
-        static_body = self.space.static_body
+        static_body = self.static_body
 
         pivot = pymunk.PivotJoint(static_body, circle.body, (0, 0), (0, 0))
-        self.space.add(pivot)
+        self.add(pivot)
         pivot.max_bias = 0  # disable joint correction
         pivot.max_force = 1000  # emulate linear friction
 
         gear = pymunk.GearJoint(static_body, circle.body, 0.0, 1.0)
-        self.space.add(gear)
+        self.add(gear)
         gear.max_bias = 0  # disable joint correction
         gear.max_force = 5000  # emulate angular friction
 
     def clear(self) -> None:
         """Remove all objects from the simulation space."""
-        self.space.remove(*self.space.bodies)
-        self.space.remove(*self.space.constraints)
-        self.space.remove(*self.space.shapes)
+        self.remove(*self.bodies)
+        self.remove(*self.constraints)
+        self.remove(*self.shapes)
 
-    def step(self) -> None:
+    def render(self) -> None:
         """
         Apply one envornment step.
 
@@ -136,19 +113,19 @@ class Space:
             - Render the updated state of the simulation
         """
         self.screen.fill(self.color)
-        self.space.debug_draw(self.draw_options)
+        self.debug_draw(self.draw_options)
         pygame.display.flip()
-        self.space.step(1 / self.fps)
+        self.step(1 / self.fps)
         self.clock.tick(self.fps)
 
     def add_segments(self) -> None:
         """Create static segments around the edge to create walls."""
 
         def wall(a: tuple[int, int], b: tuple[int, int]) -> None:
-            wall = pymunk.Segment(self.space.static_body, a, b, 1)
+            wall = pymunk.Segment(self.static_body, a, b, 10)
             wall.elasticity = 1.0
             wall.color = pygame.Color(self.color)
-            self.space.add(wall)
+            self.add(wall)
 
         wall(a=(0, 1), b=(self.width, 1))
         wall(a=(1, 0), b=(1, self.height))

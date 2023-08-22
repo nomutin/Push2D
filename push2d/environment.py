@@ -6,19 +6,17 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pygame
-from gymnasium import Env
-from gymnasium.utils import seeding
+from gymnasium import Env, spaces
 from pymunk import Vec2d
 from typeguard import typechecked
 
 from .component import Circle, Space
-from .types import Act, Obs
 
 if TYPE_CHECKING:
-    from .types import CircleParameters, SpaceParameters
+    from .types import Act, CircleParameters, Obs, SpaceParameters
 
 
-class Push2D(Env[Act, Obs]):
+class Push2D(Env):
     """
     The main Gymnasium class for implementing Play Data environments.
 
@@ -35,6 +33,9 @@ class Push2D(Env[Act, Obs]):
         - Closes the environment.
     """
 
+    observation_space = spaces.Box(-np.inf, np.inf, shape=(3,))
+    action_space = spaces.MultiDiscrete([2, 2, 2, 2])
+
     def __init__(
         self,
         space_params: SpaceParameters,
@@ -47,26 +48,28 @@ class Push2D(Env[Act, Obs]):
         self.agent_params = agent_params
         self.obstacles_params = obstacles_params
         self.space = Space(params=self.space_params)
-        self.reset(seed=42)
+        self.seed = 42
+        self.reset(seed=self.seed)
 
     @typechecked
     def step(
-        self, action: Act,
+        self,
+        action: Act,
     ) -> tuple[Obs, float, bool, bool, dict[str, Any]]:
         """
-        Run one timestep of the environment's dynamics.
+        Run one time step of the environment's dynamics.
 
         When end of episode is reached, you are responsible for calling
         `reset()` to reset this environment's state.
 
         Parameters
         ----------
-        action : np.ndarray
+        action : Act
             an action provided by the agent
 
         Returns
         -------
-        observation : np.ndarray
+        observation : Obs
             agent's observation of the current environment
         reward : float
             amount of reward returned after previous action
@@ -79,10 +82,9 @@ class Push2D(Env[Act, Obs]):
             contains auxiliary diagnostic information
             (helpful for debugging, logging, and sometimes learning)
         """
-        vector = Vec2d(*action) - self.agent.body.position
-        direction = Vec2d.normalized(vector)
-        x, y = round(direction[0], 0), round(direction[1], 0)
-        self.agent.body.velocity = Vec2d(x, y) * self.agent.params.velocity
+        directions = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
+        action = np.dot(action, directions)
+        self.agent.body.velocity = Vec2d(*action) * self.agent_params.velocity
         self.render()
         observation = self._get_observation()
         terminated, truncated, reward = False, False, 1
@@ -106,7 +108,7 @@ class Push2D(Env[Act, Obs]):
         Parameters
         ----------
         seed : int | None, optional
-            The seed that is used to initialize the environment's PRNG.
+            The seed that is used to initialize the environment's RNG.
         options : dict[str, Any] | None, optional
             Additional information to specify how the environment is reset.
 
@@ -119,9 +121,7 @@ class Push2D(Env[Act, Obs]):
             complementing ``observation``. It should be analogous to
             the ``info`` returned by :meth:`step`.
         """
-        if seed is not None:
-            self._np_random, seed = seeding.np_random(seed)
-
+        self.seed = seed if seed is not None else self.seed
         if options is not None:
             self.agent_params = options.get("agent_params", self.agent_params)
             self.obstacles_params = options.get(
@@ -131,13 +131,13 @@ class Push2D(Env[Act, Obs]):
 
         self.space.clear()
         self.agent = Circle(params=self.agent_params)
-        self.space.add(self.agent)
+        self.space.add_circle(circle=self.agent)
 
         self.obstacles = []
         for obstacle_params in self.obstacles_params:
             obstacle = Circle(params=obstacle_params)
             self.obstacles.append(obstacle)
-            self.space.add(obstacle)
+            self.space.add_circle(circle=obstacle)
         self.space.add_segments()
         self.render()
         observation = self._get_observation()
@@ -146,7 +146,7 @@ class Push2D(Env[Act, Obs]):
 
     def render(self, _: str = "") -> None:
         """Render the environment."""
-        self.space.step()
+        self.space.render()
 
     def close(self) -> None:
         """Close rendering `pygame` windows."""
@@ -176,6 +176,6 @@ class Push2D(Env[Act, Obs]):
         return {
             "agent_position": self.agent.body.position,
             "agent_velocity": self.agent.body.velocity,
-            "obstacles_position": [p.body.positions for p in self.obstacles],
-            "obstacles_velocity": [p.body.velocity for p in self.obstacles],
+            "obstacles_positions": [p.body.position for p in self.obstacles],
+            "obstacles_velocities": [p.body.velocity for p in self.obstacles],
         }

@@ -1,4 +1,4 @@
-"""Hyparparameters for example situations."""
+"""Hyperparameters for example situations."""
 
 from pygame import Color
 from pymunk import Vec2d
@@ -21,14 +21,14 @@ class RedAndGreen:
     SPACE = SpaceParameters(
         width=300,
         height=225,
-        fps=60,
-        color=Color("black"),
+        fps=10,
+        color=Color("white"),
     )
     AGENT = CircleParameters(
         radius=20,
         position=Vec2d(150, 110),
         color=Color("blue"),
-        velocity=110,
+        velocity=80,
     )
     RED = CircleParameters(
         radius=30,
