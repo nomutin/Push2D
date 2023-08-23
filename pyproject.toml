@@ -22,11 +22,6 @@ black = "^23.3.0"
 ruff = "^0.0.280"
 mypy = "^1.4.1"
 
-[tool.poetry.group.dev]
-optional = true
-[tool.poetry.group.dev.dependencies]
-torchshow = "^0.5.1"
-
 [tool.isort]
 profile = "black"
 line_length = 79

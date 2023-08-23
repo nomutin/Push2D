@@ -16,14 +16,13 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import pygame
-import torchshow as ts
 from gymnasium import Env, Wrapper
 
 from .core import Push2D
 from .variable import RedAndGreen
 
 if TYPE_CHECKING:
-    from .types import Act, Actions, Obs, Observations
+    from .types import Act, Actions, Obs
 
 
 class Saver(Wrapper):
@@ -105,23 +104,6 @@ class Saver(Wrapper):
             observation = self.step(action)[0]
             observation_list.append(observation)
         np.save("replay.npy", np.stack(observation_list))
-
-
-def save_movie(observations: Observations) -> None:
-    """
-    Save tensor data as movie.
-
-    References
-    ----------
-    * [torchshow](https://github.com/xwying/torchshow)
-    """
-    ts.show_video(
-        x=observations,
-        display=True,
-        tight_layout=True,
-        show_axis=True,
-        fps=10,
-    )
 
 
 def test_follow() -> None:
