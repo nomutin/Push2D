@@ -7,15 +7,15 @@
 
 ![demo](https://github.com/nomutin/Push-2D/assets/48053582/a0283860-ac3f-4a1c-b4e3-5460570c66f6)
 
-## Usage
+## 🗂️ Usage
 
-### Install
+### 💽 Install
 
 ```shell
 poetry add git+https://github.com/nomutin/Push-2D.git
 ```
 
-### API
+### ⚙️ API
 
 ```python
 from push_2d.core import Push2D
@@ -33,7 +33,7 @@ for _ in range(1000):
     observation, *_ = env.step(action=action)
 ```
 
-## References
+## 📚 References
 
 - [Pymunk](http://www.pymunk.org/en/latest/)
 - [Gymnasium](https://github.com/Farama-Foundation/Gymnasium)
