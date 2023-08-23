@@ -1,4 +1,4 @@
-# Push2D
+# Push-2D
 
 ![python](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -12,14 +12,14 @@
 ### Install
 
 ```shell
-poetry add git+https://github.com/nomutin/push2d.git
+poetry add git+https://github.com/nomutin/Push-2D.git
 ```
 
 ### API
 
 ```python
-from push2d.core import Push2D
-from push2d.variable import RedAndGreen
+from push_2d.core import Push2D
+from push_2d.variable import RedAndGreen
 
 env = Push2D(
     space_params=RedAndGreen.SPACE,
