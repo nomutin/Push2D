@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "push2d"}]
 
 [tool.poetry.dependencies]
-python = ">=3.8.1,<4.0"
+python = ">=3.8,<4.0"
 numpy = "^1.24.2"
 pygame = "^2.3.0"
 pymunk = "^6.4.0"
