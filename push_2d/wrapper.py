@@ -19,8 +19,8 @@ import pygame
 import torchshow as ts
 from gymnasium import Env, Wrapper
 
-from push2d.core import Push2D
-from push2d.variable import RedAndGreen
+from .core import Push2D
+from .variable import RedAndGreen
 
 if TYPE_CHECKING:
     from .types import Act, Actions, Obs, Observations

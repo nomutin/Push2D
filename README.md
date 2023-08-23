@@ -5,7 +5,7 @@
 [![healthcheck](https://github.com/nomutin/push2d-simulator/actions/workflows/healthcheck.yml/badge.svg)](https://github.com/nomutin/push2d-simulator/actions/workflows/healthcheck.yml)
 [![lint](https://github.com/nomutin/push2d-simulator/actions/workflows/lint.yml/badge.svg)](https://github.com/nomutin/push2d-simulator/actions/workflows/lint.yml)
 
-![demo](assets/demo.gif)
+![demo](https://github.com/nomutin/Push-2D/assets/48053582/a0283860-ac3f-4a1c-b4e3-5460570c66f6)
 
 ## Usage
 
