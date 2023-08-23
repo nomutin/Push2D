@@ -1,129 +1,69 @@
-"""
-Save & Replay API.
-
-To use this, the following command must be executed;
-
-```
-poetry install --with dev
-```
-"""
+"""Wrapper for Push2D environment."""
 
 from __future__ import annotations
 
-import glob
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
 import pygame
-from gymnasium import Env, Wrapper
-
-from .core import Push2D
-from .variable import RedAndGreen
+from gymnasium import Wrapper
 
 if TYPE_CHECKING:
-    from .types import Act, Actions, Obs
+    from .core import Push2D
+    from .types import Act, Obs
 
 
-class Saver(Wrapper):
-    """Data saver for the Push2D environment."""
+__all__ = ["ArrowKeyAgentOperator"]
 
-    def __init__(self, env: Env, save_length: int) -> None:
-        """Initialize Saver."""
-        super().__init__(env=env)
-        self.save_length = save_length
-        self.default_caption = "[r]:Reset [s]:Save [q]:Quit "
-        pygame.display.set_caption(self.default_caption)
-        pygame.key.set_repeat(1000 // env.space.fps, 1000 // env.space.fps)
 
-        self.actions: list[Act] = []
-        self.observations: list[Obs] = []
-        self.is_save = False
+class ArrowKeyAgentOperator(Wrapper):
+    """Wrapper to move the agent by arrow keys."""
 
-    def follow(self) -> None:
+    def __init__(self, env: Push2D, fps: int) -> None:
         """
-        Execute main loop.
-
-        - It listens for player's input and updates the state accordingly.
-        """
-        while True:
-            action = np.array([0, 0, 0, 0])
-            direction = {
-                pygame.K_UP: np.array([1, 0, 0, 0]),
-                pygame.K_DOWN: np.array([0, 1, 0, 0]),
-                pygame.K_LEFT: np.array([0, 0, 1, 0]),
-                pygame.K_RIGHT: np.array([0, 0, 0, 1]),
-            }
-
-            for event in pygame.event.get():
-                key = getattr(event, "key", 999)
-                if key == pygame.K_q:
-                    self.env.close()
-                if key == pygame.K_r:
-                    self.reset()
-                if key == pygame.K_s:
-                    self.is_save = True
-                if key in direction and event.type == pygame.KEYDOWN:
-                    action = direction[key]
-
-            observation = self.step(action)[0]
-            if action.sum() == 0:
-                continue
-
-            if self.is_save:
-                self.actions.append(action)
-                self.observations.append(observation)
-                caption = f"{len(self.actions)}/{self.save_length} "
-                pygame.display.set_caption(caption)
-                if len(self.actions) == self.save_length:
-                    self.save()
-                    self.is_save = False
-
-    def save(self) -> None:
-        """Save the observation/action states."""
-        dirname = Path("data")
-        Path(dirname).mkdir(parents=True, exist_ok=True)
-        num = len(glob.glob(f"{dirname}/*_[0-9]*.npy")) // 2
-        np.save(f"{dirname}/raw_action_{num}.npy", np.stack(self.actions))
-        np.save(f"{dirname}/raw_obs_{num}.npy", np.stack(self.observations))
-        self.actions.clear()
-        self.observations.clear()
-        pygame.display.set_caption(self.default_caption)
-
-    def replay(self, actions: Actions) -> None:
-        """
-        Play a saved actions.
+        Initialize Wrapper.
 
         Parameters
         ----------
-        actions: Act
-            The saved action.
+        env : Push2D
+            `Push2D` environment instance.
+        fps : int
+            operating fps.
+            It should be equal to `Push2D.space.fps`.
         """
-        observation_list = [self.reset()[0]]
-        for action in actions:
-            observation = self.step(action)[0]
-            observation_list.append(observation)
-        np.save("replay.npy", np.stack(observation_list))
+        super().__init__(env=env)
+        self.fps = fps
+        pygame.key.set_repeat(1000 // fps, 1000 // fps)
 
+    @property
+    def window_caption(self) -> str:
+        """Return the caption of the window."""
+        return pygame.display.get_caption()[0]
 
-def test_follow() -> None:
-    """Test for action/observation save."""
-    env = Push2D(
-        space_params=RedAndGreen.SPACE,
-        agent_params=RedAndGreen.AGENT,
-        obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
-    )
-    saver = Saver(env=env, save_length=100)
-    saver.follow()
+    @window_caption.setter
+    def window_caption(self, caption: str) -> None:
+        """Set the caption of the window."""
+        pygame.display.set_caption(caption)
 
+    def listen(self) -> tuple[Obs, Act]:
+        """Execute `env.step()` by arrow key input."""
+        action = np.array([0, 0, 0, 0])
+        direction = {
+            pygame.K_UP: np.array([1, 0, 0, 0]),
+            pygame.K_DOWN: np.array([0, 1, 0, 0]),
+            pygame.K_LEFT: np.array([0, 0, 1, 0]),
+            pygame.K_RIGHT: np.array([0, 0, 0, 1]),
+        }
 
-def test_replay(path_to_action: str) -> None:
-    """Test for action replay."""
-    env = Push2D(
-        space_params=RedAndGreen.SPACE,
-        agent_params=RedAndGreen.AGENT,
-        obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
-    )
-    actions = np.load(path_to_action)
-    saver = Saver(env=env, save_length=100)
-    saver.replay(actions=actions)
+        for event in pygame.event.get():
+            key = getattr(event, "key", 999)
+            if key == pygame.K_q:
+                self.env.close()
+            if key == pygame.K_r:
+                self.reset()
+            if key == pygame.K_s:
+                self.is_save = True
+            if key in direction and event.type == pygame.KEYDOWN:
+                action = direction[key]
+
+        return self.step(action)[0], action

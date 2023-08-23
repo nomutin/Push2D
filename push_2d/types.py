@@ -30,6 +30,3 @@ class CircleParameters:
 # up, down, left, right
 Act = NDArray[Shape["4"], Int]
 Obs = NDArray[Shape["Width, Height, 3"], Int]
-
-Actions = NDArray[Shape["Length, 4"], Int]
-Observations = NDArray[Shape["Length, Width, Height, 3"], Int]

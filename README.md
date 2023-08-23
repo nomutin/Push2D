@@ -9,13 +9,13 @@
 
 ## 🗂️ Usage
 
-### 💽 Install
+### ⚙️ Install
 
 ```shell
 poetry add git+https://github.com/nomutin/Push-2D.git
 ```
 
-### ⚙️ API
+### 🏋️‍♀️ Gymnasium API
 
 ```python
 from push_2d.core import Push2D
@@ -31,6 +31,29 @@ env.reset(seed=42)
 for _ in range(1000):
     action = env.action_space.sample()
     observation, *_ = env.step(action=action)
+```
+
+### ⌨️ Keyboard API
+
+```python
+import numpy as np
+
+from push_2d.core import Push2D
+from push_2d.variable import RedAndGreen
+from push_2d.wrapper import ArrowKeyAgentOperator
+
+env = Push2D(
+    space_params=RedAndGreen.SPACE,
+    agent_params=RedAndGreen.AGENT,
+    obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
+)
+operator = ArrowKeyAgentOperator(env=env, fps=RedAndGreen.SPACE.fps)
+operator.reset(seed=42)
+
+while True:
+    observation, action = operator.listen()
+    if not np.all(action == 0):
+        print(action)
 ```
 
 ## 📚 References
