@@ -4,10 +4,7 @@ version = "0.2.0"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"
-packages = [{include = "push2d"}]
-
-[tool.setuptools]
-py-modules = []
+packages = [{include = "push2d_core"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
