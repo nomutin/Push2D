@@ -15,12 +15,26 @@
 poetry add git+https://github.com/nomutin/push2d.git
 ```
 
-### Collect Data
+### API
 
-### Action Test
+```python
+from push2d.core import Push2D
+from push2d.variable import RedAndGreen
+
+env = Push2D(
+    space_params=RedAndGreen.SPACE,
+    agent_params=RedAndGreen.AGENT,
+    obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
+)
+env.reset(seed=42)
+
+for _ in range(1000):
+    action = env.action_space.sample()
+    observation, *_ = env.step(action=action)
+```
 
 ## References
 
 - [Pymunk](http://www.pymunk.org/en/latest/)
-- [BringBackShapes Environment](https://github.com/arnavkj1995/BBS)
 - [Gymnasium](https://github.com/Farama-Foundation/Gymnasium)
+- [BringBackShapes Environment](https://github.com/arnavkj1995/BBS)

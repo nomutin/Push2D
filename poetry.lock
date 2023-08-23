@@ -577,21 +577,6 @@ files = [
 ]
 
 [[package]]
-name = "natsort"
-version = "8.4.0"
-description = "Simple yet flexible natural sorting in Python."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "natsort-8.4.0-py3-none-any.whl", hash = "sha256:4732914fb471f56b5cce04d7bae6f164a592c7712e1c85f9ef585e197299521c"},
-    {file = "natsort-8.4.0.tar.gz", hash = "sha256:45312c4a0e5507593da193dedd04abb1469253b601ecaf63445ad80f0a1ea581"},
-]
-
-[package.extras]
-fast = ["fastnumbers (>=2.0.0)"]
-icu = ["PyICU (>=1.0.0)"]
-
-[[package]]
 name = "nptyping"
 version = "2.5.0"
 description = "Type hints for NumPy."
@@ -989,25 +974,6 @@ matplotlib = "*"
 numpy = "*"
 
 [[package]]
-name = "typeguard"
-version = "4.1.2"
-description = "Run-time type checker for Python"
-optional = false
-python-versions = ">=3.7.4"
-files = [
-    {file = "typeguard-4.1.2-py3-none-any.whl", hash = "sha256:e00775920d4c91e93a0db0ed473ecda9cfaca578aed3ce0ed3ba7f3cc38eab9c"},
-    {file = "typeguard-4.1.2.tar.gz", hash = "sha256:3be187945f9ef5a9f6d7a926dfe54babb7dfd807085ce05f9a5e8735f2487990"},
-]
-
-[package.dependencies]
-importlib-metadata = {version = ">=3.6", markers = "python_version < \"3.10\""}
-typing-extensions = {version = ">=4.7.0", markers = "python_version < \"3.12\""}
-
-[package.extras]
-doc = ["Sphinx (<7)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
-test = ["mypy (>=1.2.0)", "pytest (>=7)"]
-
-[[package]]
 name = "typing-extensions"
 version = "4.7.1"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1036,4 +1002,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "2dcc53c5237f3a136f5bec2672acff6117c66ef1fd706787e39314d62a7d5f9c"
+content-hash = "9cc20e37fb6534b2f7391938407ce66f3a17fe3f30e8d9a4e4cb844bbd48babb"

@@ -12,33 +12,33 @@ class RedAndGreen:
 
     Attributes
     ----------
+    CENTER : Vec2d
     SPACE : SpaceParameters
     AGENT : CircleParameters
     RED : CircleParameters
     GREEN : CircleParameters
     """
 
+    CENTER = Vec2d(150, 110)
     SPACE = SpaceParameters(
         width=300,
         height=225,
-        fps=10,
+        fps=15,
         color=Color("white"),
     )
     AGENT = CircleParameters(
         radius=20,
-        position=Vec2d(150, 110),
+        position=CENTER,
         color=Color("blue"),
-        velocity=80,
+        velocity=100,
     )
     RED = CircleParameters(
         radius=30,
         position=Vec2d(50, 50),
         color=Color("red"),
-        velocity=0,
     )
     GREEN = CircleParameters(
         radius=30,
         position=Vec2d(250, 175),
         color=Color("green"),
-        velocity=0,
     )

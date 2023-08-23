@@ -12,7 +12,6 @@ numpy = "^1.24.2"
 pygame = "^2.3.0"
 pymunk = "^6.4.0"
 nptyping = "^2.5.0"
-typeguard = "^4.1.2"
 gymnasium = "^0.29.1"
 
 [tool.poetry.group.lint]
@@ -27,7 +26,6 @@ mypy = "^1.4.1"
 optional = true
 [tool.poetry.group.dev.dependencies]
 torchshow = "^0.5.1"
-natsort = "^8.4.0"
 
 [tool.isort]
 profile = "black"

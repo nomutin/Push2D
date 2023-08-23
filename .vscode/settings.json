@@ -12,6 +12,5 @@
         "pymunk",
         "surfarray",
         "torchshow",
-        "typechecked"
     ]
 }

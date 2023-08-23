@@ -18,11 +18,9 @@ import numpy as np
 import pygame
 import torchshow as ts
 from gymnasium import Env, Wrapper
-from pymunk import Vec2d
-from typeguard import typechecked
 
-from push2d.environment import Push2D
-from push2d.variants import RedAndGreen
+from push2d.core import Push2D
+from push2d.variable import RedAndGreen
 
 if TYPE_CHECKING:
     from .types import Act, Actions, Obs, Observations
@@ -31,37 +29,17 @@ if TYPE_CHECKING:
 class Saver(Wrapper):
     """Data saver for the Push2D environment."""
 
-    def __init__(
-        self,
-        env: Env,
-        fps: int = 10,
-        save_length: int = 200,
-    ) -> None:
+    def __init__(self, env: Env, save_length: int) -> None:
         """Initialize Saver."""
         super().__init__(env=env)
         self.save_length = save_length
         self.default_caption = "[r]:Reset [s]:Save [q]:Quit "
         pygame.display.set_caption(self.default_caption)
-        pygame.key.set_repeat(1000 // fps, 1000 // fps)
+        pygame.key.set_repeat(1000 // env.space.fps, 1000 // env.space.fps)
 
         self.actions: list[Act] = []
         self.observations: list[Obs] = []
         self.is_save = False
-
-    def get_action(self) -> Act:
-        """Get the action from the environment."""
-        action = Vec2d(0, 0)
-        direction = {
-            pygame.K_a: Vec2d(-1, 0),
-            pygame.K_d: Vec2d(1, 0),
-            pygame.K_w: Vec2d(0, -1),
-            pygame.K_z: Vec2d(0, 1),
-        }
-        for event in pygame.event.get():
-            key = getattr(event, "key", 999)
-            if key in direction:
-                action += direction[key]
-        return np.array(action)
 
     def follow(self) -> None:
         """
@@ -87,10 +65,11 @@ class Saver(Wrapper):
                 if key == pygame.K_s:
                     self.is_save = True
                 if key in direction and event.type == pygame.KEYDOWN:
-                    action += direction[key]
+                    action = direction[key]
 
-            action = np.array(action)
             observation = self.step(action)[0]
+            if action.sum() == 0:
+                continue
 
             if self.is_save:
                 self.actions.append(action)
@@ -128,10 +107,7 @@ class Saver(Wrapper):
         np.save("replay.npy", np.stack(observation_list))
 
 
-@typechecked
-def save_movie(
-    observations: Observations,
-) -> None:
+def save_movie(observations: Observations) -> None:
     """
     Save tensor data as movie.
 
@@ -148,7 +124,7 @@ def save_movie(
     )
 
 
-def save_test() -> None:
+def test_follow() -> None:
     """Test for action/observation save."""
     env = Push2D(
         space_params=RedAndGreen.SPACE,
@@ -159,17 +135,13 @@ def save_test() -> None:
     saver.follow()
 
 
-def rollout_test() -> None:
+def test_replay(path_to_action: str) -> None:
     """Test for action replay."""
     env = Push2D(
         space_params=RedAndGreen.SPACE,
         agent_params=RedAndGreen.AGENT,
         obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
     )
-    actions = np.load("data/8_22_3/raw_action_0.npy")
+    actions = np.load(path_to_action)
     saver = Saver(env=env, save_length=100)
     saver.replay(actions=actions)
-
-
-if __name__ == "__main__":
-    save_test()

@@ -8,7 +8,6 @@ import numpy as np
 import pygame
 from gymnasium import Env, spaces
 from pymunk import Vec2d
-from typeguard import typechecked
 
 from .component import Circle, Space
 
@@ -48,10 +47,9 @@ class Push2D(Env):
         self.agent_params = agent_params
         self.obstacles_params = obstacles_params
         self.space = Space(params=self.space_params)
-        self.seed = 42
-        self.reset(seed=self.seed)
+        self.default_seed = 42
+        self.reset(seed=self.default_seed)
 
-    @typechecked
     def step(
         self,
         action: Act,
@@ -82,16 +80,15 @@ class Push2D(Env):
             contains auxiliary diagnostic information
             (helpful for debugging, logging, and sometimes learning)
         """
-        directions = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
-        action = np.dot(action, directions)
-        self.agent.body.velocity = Vec2d(*action) * self.agent_params.velocity
+        directions = np.array([[0, -1], [0, 1], [-1, 0], [1, 0]])
+        _action = np.dot(action, directions)
+        self.agent.body.velocity = Vec2d(*_action) * self.agent_params.velocity
         self.render()
         observation = self._get_observation()
         terminated, truncated, reward = False, False, 1
         info = self._get_object_info()
         return observation, reward, terminated, truncated, info
 
-    @typechecked
     def reset(
         self,
         *,
@@ -121,7 +118,9 @@ class Push2D(Env):
             complementing ``observation``. It should be analogous to
             the ``info`` returned by :meth:`step`.
         """
-        self.seed = seed if seed is not None else self.seed
+        self.default_seed = seed if seed is not None else self.default_seed
+        np.random.default_rng(self.default_seed)
+
         if options is not None:
             self.agent_params = options.get("agent_params", self.agent_params)
             self.obstacles_params = options.get(
@@ -130,6 +129,7 @@ class Push2D(Env):
             )
 
         self.space.clear()
+
         self.agent = Circle(params=self.agent_params)
         self.space.add_circle(circle=self.agent)
 
@@ -138,6 +138,7 @@ class Push2D(Env):
             obstacle = Circle(params=obstacle_params)
             self.obstacles.append(obstacle)
             self.space.add_circle(circle=obstacle)
+
         self.space.add_segments()
         self.render()
         observation = self._get_observation()
@@ -158,7 +159,7 @@ class Push2D(Env):
 
         Returns
         -------
-        np.ndarray
+        Obs
             An array containing the current observation state.
         """
         surface = pygame.surfarray.array3d(self.space.screen)
