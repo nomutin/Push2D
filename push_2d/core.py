@@ -9,7 +9,7 @@ import pygame
 from gymnasium import Env, spaces
 from pymunk import Vec2d
 
-from .component import Circle, Space
+from .component import Agent, Circle, Space
 
 if TYPE_CHECKING:
     from .types import Act, CircleParameters, Obs, SpaceParameters
@@ -50,6 +50,15 @@ class Push2D(Env):
         self.default_seed = 42
         self.reset(seed=self.default_seed)
 
+    def render(self, _: str = "") -> None:
+        """
+        Render the environment.
+
+        This is not explicitly called,
+        `step()` or `reset()` will always call it.
+        """
+        self.space.render()
+
     def step(
         self,
         action: Act,
@@ -82,7 +91,9 @@ class Push2D(Env):
         """
         directions = np.array([[0, -1], [0, 1], [-1, 0], [1, 0]])
         _action = np.dot(action, directions)
-        self.agent.body.velocity = Vec2d(*_action) * self.agent_params.velocity
+        self.agent.control_body.velocity = (
+            Vec2d(*_action) * self.agent_params.velocity
+        )
         self.render()
         observation = self._get_observation()
         terminated, truncated, reward = False, False, 1
@@ -130,8 +141,8 @@ class Push2D(Env):
 
         self.space.clear()
 
-        self.agent = Circle(params=self.agent_params)
-        self.space.add_circle(circle=self.agent)
+        self.agent = Agent(params=self.agent_params)
+        self.space.add_agent(agent=self.agent)
 
         self.obstacles = []
         for obstacle_params in self.obstacles_params:
@@ -144,10 +155,6 @@ class Push2D(Env):
         observation = self._get_observation()
         info = self._get_object_info()
         return observation, info
-
-    def render(self, _: str = "") -> None:
-        """Render the environment."""
-        self.space.render()
 
     def close(self) -> None:
         """Close rendering `pygame` windows."""

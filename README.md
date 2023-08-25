@@ -56,6 +56,25 @@ while True:
         print(action)
 ```
 
+### 📀 Saver API
+
+```python
+from push_2d.core import Push2D
+from push_2d.variable import RedAndGreen
+from push_2d.wrapper import Saver
+
+env = Push2D(
+    space_params=RedAndGreen.SPACE,
+    agent_params=RedAndGreen.AGENT,
+    obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
+)
+saver = Saver(env=env, fps=RedAndGreen.SPACE.fps, seq_len=300)
+saver.reset(seed=42)
+
+while True:
+    saver.listen()
+```
+
 ## 📚 References
 
 - [Pymunk](http://www.pymunk.org/en/latest/)

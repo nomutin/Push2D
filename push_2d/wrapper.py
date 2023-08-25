@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pygame
@@ -45,7 +46,7 @@ class ArrowKeyAgentOperator(Wrapper):
         """Set the caption of the window."""
         pygame.display.set_caption(caption)
 
-    def listen(self) -> tuple[Obs, Act]:
+    def listen(self) -> Act:
         """Execute `env.step()` by arrow key input."""
         action = np.array([0, 0, 0, 0])
         direction = {
@@ -66,4 +67,46 @@ class ArrowKeyAgentOperator(Wrapper):
             if key in direction and event.type == pygame.KEYDOWN:
                 action = direction[key]
 
-        return self.step(action)[0], action
+        return action
+
+
+class Saver(ArrowKeyAgentOperator):
+    def __init__(self, env: Push2D, fps: int, seq_len: float) -> None:
+        super().__init__(env=env, fps=fps)
+        self.action_list: list[Act] = []
+        self.observation_list: list[Obs] = []
+        self.seq_len = seq_len
+
+    def reset(
+        self,
+        *,
+        seed: int | None = None,
+        options: dict[str, Any] | None = None,
+    ) -> tuple[Obs, dict[str, Any]]:
+        outputs = super().reset(seed=seed, options=options)
+        self.action_list.clear()
+        self.observation_list.clear()
+        self.window_caption = f"{len(self.action_list)}/{self.seq_len}"
+        return outputs
+
+    def listen(self) -> Act:
+        action = super().listen()
+        if not np.all(action == 0):
+            observation, *_ = self.step(action)
+            self.action_list.append(action)
+            self.observation_list.append(observation)
+            self.window_caption = f"{len(self.action_list)}/{self.seq_len}"
+
+        if len(self.action_list) == self.seq_len:
+            self.save()
+        return action
+
+    def save(self) -> None:
+        save_directory = Path("data")
+        save_directory.mkdir(exist_ok=True)
+        actions = np.stack(self.action_list, axis=0)
+        observations = np.stack(self.observation_list, axis=0)
+        idx = len(list(save_directory.glob("*.npy"))) // 2
+        np.save(save_directory / f"action_{idx}.npy", actions)
+        np.save(save_directory / f"observation_{idx}.npy", observations)
+        self.reset()

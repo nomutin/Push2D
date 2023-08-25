@@ -30,12 +30,63 @@ class Circle:
 
     def __post_init__(self) -> None:
         """Create Body and Shape for the circle and set its properties."""
-        self.body = pymunk.Body()
+        self._setup_body()
+        self._setup_shape()
+
+    def _setup_body(self) -> None:
+        self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         self.body.position = self.params.position
+
+    def _setup_shape(self) -> None:
         self.shape = pymunk.Circle(self.body, self.params.radius)
         self.shape.mass = 1.0
-        self.shape.color = pygame.Color(self.params.color)
-        self.shape.elasticity = 1.0
+        self.shape.color = self.params.color
+        self.shape.friction = 0.7
+        self.shape.elasticity = 0
+
+
+@dataclasses.dataclass
+class Agent:
+    params: CircleParameters
+
+    def __post_init__(self) -> None:
+        self.velocity = self.params.velocity
+        self._setup_control_body()
+        self._setup_body()
+        self._setup_shape()
+        self._setup_pivot()
+        self._setup_gear()
+
+    def _setup_control_body(self) -> None:
+        self.control_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
+        self.control_body.position = self.params.position
+
+    def _setup_body(self) -> None:
+        self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
+        self.body.position = self.params.position
+
+    def _setup_shape(self) -> None:
+        self.shape = pymunk.Circle(self.body, self.params.radius)
+        self.shape.color = self.params.color
+        self.shape.mass = 10
+        self.shape.friction = 0.7
+        self.shape.elasticity = 0
+
+    def _setup_pivot(self) -> None:
+        self.pivot = pymunk.PivotJoint(
+            self.control_body,
+            self.body,
+            (0, 0),
+            (0, 0),
+        )
+        self.pivot.max_bias = 0  # disable joint correction
+        self.pivot.max_force = 10000  # emulate linear friction
+
+    def _setup_gear(self) -> None:
+        self.gear = pymunk.GearJoint(self.control_body, self.body, 0.0, 1.0)
+        self.gear.error_bias = 0  # attempt to fully correct the joint
+        self.gear.max_bias = 1.2  # but limit it's angular correction rate
+        self.gear.max_force = 50000  # emulate angular friction
 
 
 class Space(pymunk.Space):
@@ -96,6 +147,15 @@ class Space(pymunk.Space):
         self.add(gear)
         gear.max_bias = 0  # disable joint correction
         gear.max_force = 5000  # emulate angular friction
+
+    def add_agent(self, agent: Agent) -> None:
+        self.add(
+            agent.control_body,
+            agent.body,
+            agent.shape,
+            agent.pivot,
+            agent.gear,
+        )
 
     def clear(self) -> None:
         """Remove all objects from the simulation space."""
