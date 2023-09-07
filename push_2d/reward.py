@@ -353,7 +353,7 @@ class TopLeftGreenBottomRightRed(AbstractRedAndGreenRewardFactory):
         return reward
 
 
-class RightTopRedRightBottomGreen(AbstractRedAndGreenRewardFactory):
+class TopRightRedRightBottomGreen(AbstractRedAndGreenRewardFactory):
     """
     Rewarded when red in right top and green in right bottom.
 
@@ -388,7 +388,7 @@ class RightTopRedRightBottomGreen(AbstractRedAndGreenRewardFactory):
         return reward
 
 
-class RightTopGreenRightBottomGreen(AbstractRedAndGreenRewardFactory):
+class TopRightGreenRightBottomGreen(AbstractRedAndGreenRewardFactory):
     """
     Rewarded when green in right top and red in right bottom.
 
