@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Push-2D"
-version = "2.0.0"
+version = "2.0.1"
 description = ""
 authors = ["nomutin <nomura0508@icloud.com>"]
 readme = "README.md"

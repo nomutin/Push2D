@@ -14,7 +14,10 @@ class AbstractRewardFactory:
     """Reward factory interface."""
 
     @classmethod
-    def get_reward(cls, info: dict[str, Any]) -> float:
+    def get_reward(
+        cls,
+        info: dict[str, Any],  # noqa: ARG003
+    ) -> float:
         """
         Get reward for the current state of the environment.
 
@@ -388,7 +391,7 @@ class TopRightRedRightBottomGreen(AbstractRedAndGreenRewardFactory):
         return reward
 
 
-class TopRightGreenRightBottomGreen(AbstractRedAndGreenRewardFactory):
+class TopRightGreenRightBottomRed(AbstractRedAndGreenRewardFactory):
     """
     Rewarded when green in right top and red in right bottom.
 
