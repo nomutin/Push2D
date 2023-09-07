@@ -51,9 +51,9 @@ operator = ArrowKeyAgentOperator(env=env, fps=RedAndGreen.SPACE.fps)
 operator.reset(seed=42)
 
 while True:
-    observation, action = operator.listen()
+    action = operator.listen()
     if not np.all(action == 0):
-        print(action)
+        env.step(action=action)
 ```
 
 ### 📀 Saver API

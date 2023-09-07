@@ -10,9 +10,11 @@ from gymnasium import Env, spaces
 from pymunk import Vec2d
 
 from .component import Agent, Circle, Space
+from .reward import AbstractRewardFactory
+from .types import CircleParameters, SpaceParameters
 
 if TYPE_CHECKING:
-    from .types import Act, CircleParameters, Obs, SpaceParameters
+    from .types import Act, Obs
 
 
 class Push2D(Env):
@@ -40,12 +42,14 @@ class Push2D(Env):
         space_params: SpaceParameters,
         agent_params: CircleParameters,
         obstacles_params: list[CircleParameters],
+        reward_factory: type[AbstractRewardFactory] = AbstractRewardFactory,
     ) -> None:
         """Initialize the environment."""
         super().__init__()
         self.space_params = space_params
         self.agent_params = agent_params
         self.obstacles_params = obstacles_params
+        self.reward_factory = reward_factory()
         self.space = Space(params=self.space_params)
         self.default_seed = 42
         self.reset(seed=self.default_seed)
@@ -96,8 +100,9 @@ class Push2D(Env):
         )
         self.render()
         observation = self._get_observation()
-        terminated, truncated, reward = False, False, 1
-        info = self._get_object_info()
+        terminated, truncated = False, False
+        info = self._get_info()
+        reward = self.reward_factory.get_reward(info)
         return observation, reward, terminated, truncated, info
 
     def reset(
@@ -153,7 +158,7 @@ class Push2D(Env):
         self.space.add_segments()
         self.render()
         observation = self._get_observation()
-        info = self._get_object_info()
+        info = self._get_info()
         return observation, info
 
     def close(self) -> None:
@@ -172,18 +177,38 @@ class Push2D(Env):
         surface = pygame.surfarray.array3d(self.space.screen)
         return np.transpose(surface, (1, 0, 2))
 
-    def _get_object_info(self) -> dict[str, Any]:
+    def _get_info(self) -> dict[str, Any]:
         """
-        Get current object information.
+        Get current object/environment information.
 
         Returns
         -------
         dict[str, Any]
-            A dictionary containing the current object information.
+            A dictionary containing the current object/environment information.
         """
+        space_parameters = SpaceParameters(
+            width=self.space.width,
+            height=self.space.height,
+            fps=self.space.fps,
+            color=self.space.color,
+        )
+        agent_parameters = CircleParameters(
+            radius=self.agent.params.radius,
+            position=self.agent.body.position,
+            color=self.agent.params.color,
+            velocity=self.agent_params.velocity,
+        )
+        obstacles_parameters = []
+        for obstacle in self.obstacles:
+            obstacle_parameters = CircleParameters(
+                radius=obstacle.params.radius,
+                position=obstacle.body.position,
+                color=obstacle.params.color,
+                velocity=obstacle.body.velocity,
+            )
+            obstacles_parameters.append(obstacle_parameters)
         return {
-            "agent_position": self.agent.body.position,
-            "agent_velocity": self.agent.body.velocity,
-            "obstacles_positions": [p.body.position for p in self.obstacles],
-            "obstacles_velocities": [p.body.velocity for p in self.obstacles],
+            "space": space_parameters,
+            "agent": agent_parameters,
+            "obstacles": obstacles_parameters,
         }

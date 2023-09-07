@@ -47,9 +47,12 @@ class Circle:
 
 @dataclasses.dataclass
 class Agent:
+    """A class to represent the agent with physics properties."""
+
     params: CircleParameters
 
     def __post_init__(self) -> None:
+        """Create body/shape/pivot/gear for the agent."""
         self.velocity = self.params.velocity
         self._setup_control_body()
         self._setup_body()
@@ -125,7 +128,7 @@ class Space(pymunk.Space):
 
     def add_circle(self, circle: Circle) -> None:
         """
-        Add a circular object to the simulation space.
+        Add a `Circle` to the simulation space.
 
         And Connect it to a pivot and gear joint for more realistic physics.
 
@@ -149,6 +152,7 @@ class Space(pymunk.Space):
         gear.max_force = 5000  # emulate angular friction
 
     def add_agent(self, agent: Agent) -> None:
+        """Add a `Agent` to the simulation space."""
         self.add(
             agent.control_body,
             agent.body,
