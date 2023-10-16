@@ -1,24 +1,40 @@
-name: Check Pull Request
+name: Lint
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - main
 
 jobs:
-  lint:
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Install Rye
-        uses: baptiste0928/cargo-install@v2
-        with:
-          crate: rye
-          git: https://github.com/mitsuhiko/rye
-          branch: main
-      - name: Install Dependencies
-        run: rye sync --no-lock
-      - name: Lint
-        run: rye run lint
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.lock
+
+    - name: Run black
+      run: |
+        black . --check
+
+    - name: Run mypy
+      run: |
+        mypy .
+
+    - name: Run isort
+      run: |
+        isort . --check-only
+    
+    - name: Run ruff
+      run: |
+        ruff .
