@@ -2,7 +2,6 @@
 
 ![python](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![healthcheck](https://github.com/nomutin/push2d-simulator/actions/workflows/healthcheck.yml/badge.svg)](https://github.com/nomutin/push2d-simulator/actions/workflows/healthcheck.yml)
 [![lint](https://github.com/nomutin/push2d-simulator/actions/workflows/lint.yml/badge.svg)](https://github.com/nomutin/push2d-simulator/actions/workflows/lint.yml)
 
 ![demo](https://github.com/nomutin/Push-2D/assets/48053582/a0283860-ac3f-4a1c-b4e3-5460570c66f6)

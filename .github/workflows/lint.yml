@@ -1,36 +1,24 @@
-name: lint
+name: Check Pull Request
 
 on:
-  push:
-    branches:
-      - main 
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize, reopened]
 
 jobs:
   lint:
-    name: Lint with black, isort, ruff
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.8']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/checkout@v3
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: python -m pip install poetry==1.5.1
-      - name: Add path for Poetry
-        run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          ref: ${{ github.head_ref }}
+      - name: Install Rye
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: rye
+          git: https://github.com/mitsuhiko/rye
+          branch: main
       - name: Install Dependencies
-        run: poetry install --with lint
-      - name: Lint with black
-        run: poetry run black . --check
-      - name: Lint with isort
-        run: poetry run isort . --check-only
-      - name: Lint with ruff
-        run: poetry run ruff .
+        run: rye sync --no-lock
+      - name: Lint
+        run: rye run lint
