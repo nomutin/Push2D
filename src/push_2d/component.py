@@ -122,6 +122,7 @@ class Agent:
         self.gear.max_force = 50000  # emulate angular friction
 
     def add(self, to: Space) -> Space:
+        """Add an agent to the simulation space."""
         to.add(
             self.control_body,
             self.body,
@@ -134,16 +135,21 @@ class Agent:
 
 @dataclasses.dataclass
 class Wall:
-    a: tuple[int, int]
-    b: tuple[int, int]
+    """A class to represent a wall with physics properties."""
+
+    start_x: int
+    start_y: int
+    end_x: int
+    end_y: int
     radius: int
     color: Color
 
     def add(self, to: Space) -> Space:
+        """Add a wall to the simulation space."""
         wall = pymunk.Segment(
             body=to.static_body,
-            a=self.a,
-            b=self.b,
+            a=(self.start_x, self.start_y),
+            b=(self.end_x, self.end_y),
             radius=self.radius,
         )
         wall.elasticity = 1.0
@@ -212,17 +218,3 @@ class Space(pymunk.Space):
         pygame.display.flip()
         self.step(1 / self.fps)
         self.clock.tick(self.fps)
-
-    def add_segments(self) -> None:
-        """Create static segments around the edge to create walls."""
-
-        def wall(a: tuple[int, int], b: tuple[int, int]) -> None:
-            wall = pymunk.Segment(self.static_body, a, b, 10)
-            wall.elasticity = 1.0
-            wall.color = pygame.Color(self.color)
-            self.add(wall)
-
-        wall(a=(0, 1), b=(self.width, 1))
-        wall(a=(1, 0), b=(1, self.height))
-        wall(a=(self.width, 0), b=(self.width, self.height))
-        wall(a=(0, self.height), b=(self.width, self.height))

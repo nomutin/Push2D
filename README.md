@@ -18,13 +18,8 @@ poetry add git+https://github.com/nomutin/Push-2D.git
 
 ```python
 from push_2d.core import Push2D
-from push_2d.variable import RedAndGreen
 
-env = Push2D(
-    space_params=RedAndGreen.SPACE,
-    agent_params=RedAndGreen.AGENT,
-    obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
-)
+env = Push2D.from_yaml("")
 env.reset(seed=42)
 
 for _ in range(1000):
@@ -38,15 +33,10 @@ for _ in range(1000):
 import numpy as np
 
 from push_2d.core import Push2D
-from push_2d.variable import RedAndGreen
 from push_2d.wrapper import ArrowKeyAgentOperator
 
-env = Push2D(
-    space_params=RedAndGreen.SPACE,
-    agent_params=RedAndGreen.AGENT,
-    obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
-)
-operator = ArrowKeyAgentOperator(env=env, fps=RedAndGreen.SPACE.fps)
+env = Push2D.from_yaml("")
+operator = ArrowKeyAgentOperator(env=env)
 operator.reset(seed=42)
 
 while True:
@@ -59,14 +49,9 @@ while True:
 
 ```python
 from push_2d.core import Push2D
-from push_2d.variable import RedAndGreen
 from push_2d.wrapper import Saver
 
-env = Push2D(
-    space_params=RedAndGreen.SPACE,
-    agent_params=RedAndGreen.AGENT,
-    obstacles_params=[RedAndGreen.RED, RedAndGreen.GREEN],
-)
+env = Push2D.from_yaml("")
 saver = Saver(env=env, fps=RedAndGreen.SPACE.fps, seq_len=300)
 saver.reset(seed=42)
 

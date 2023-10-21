@@ -16,7 +16,7 @@ from .reward import AbstractRewardFactory
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from .component import Agent, Circle, Space
+    from .component import Agent, Circle, Space, Wall
     from .types import Act, Obs
 
 
@@ -40,11 +40,12 @@ class Push2D(Env):
     observation_space = spaces.Box(-np.inf, np.inf, shape=(3,))
     action_space = spaces.MultiDiscrete([2, 2, 2, 2])
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         space: Space,
         agent: Agent,
         obstacles: list[Circle],
+        segments: list[Wall],
         reward_factory: type[AbstractRewardFactory] = AbstractRewardFactory,
     ) -> None:
         """Initialize the environment."""
@@ -52,6 +53,7 @@ class Push2D(Env):
         self.space = space
         self.agent = agent
         self.obstacles = obstacles
+        self.segments = segments
         self.reward_factory = reward_factory()
         self.default_seed = 42
         self.reset(seed=self.default_seed)
@@ -143,8 +145,9 @@ class Push2D(Env):
         self.agent.add(to=self.space)
         for obstacle in self.obstacles:
             obstacle.add(to=self.space)
+        for segment in self.segments:
+            segment.add(to=self.space)
 
-        self.space.add_segments()
         self.render()
         observation = self._get_observation()
         info = self._get_info()
@@ -193,4 +196,13 @@ class Push2D(Env):
             An instance of the environment.
         """
         config = OmegaConf.load(path)
-        return instantiate(config=config)
+        agent = instantiate(config.agent)
+        space = instantiate(config.space)
+        obstacles = [instantiate(obstacle) for obstacle in config.obstacles]
+        segments = [instantiate(segment) for segment in config.segments]
+        return cls(
+            agent=agent,
+            space=space,
+            obstacles=obstacles,
+            segments=segments,
+        )
