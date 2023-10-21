@@ -7,13 +7,16 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import pygame
 from gymnasium import Env, spaces
+from hydra.utils import instantiate
+from omegaconf import OmegaConf
 from pymunk import Vec2d
 
-from .component import Agent, Circle, Space
 from .reward import AbstractRewardFactory
-from .types import CircleParameters, SpaceParameters
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
+    from .component import Agent, Circle, Space
     from .types import Act, Obs
 
 
@@ -39,18 +42,17 @@ class Push2D(Env):
 
     def __init__(
         self,
-        space_params: SpaceParameters,
-        agent_params: CircleParameters,
-        obstacles_params: list[CircleParameters],
+        space: Space,
+        agent: Agent,
+        obstacles: list[Circle],
         reward_factory: type[AbstractRewardFactory] = AbstractRewardFactory,
     ) -> None:
         """Initialize the environment."""
         super().__init__()
-        self.space_params = space_params
-        self.agent_params = agent_params
-        self.obstacles_params = obstacles_params
+        self.space = space
+        self.agent = agent
+        self.obstacles = obstacles
         self.reward_factory = reward_factory()
-        self.space = Space(params=self.space_params)
         self.default_seed = 42
         self.reset(seed=self.default_seed)
 
@@ -96,7 +98,7 @@ class Push2D(Env):
         directions = np.array([[0, -1], [0, 1], [-1, 0], [1, 0]])
         _action = np.dot(action, directions)
         self.agent.control_body.velocity = (
-            Vec2d(*_action) * self.agent_params.velocity
+            Vec2d(*_action) * self.agent.velocity
         )
         self.render()
         observation = self._get_observation()
@@ -109,7 +111,7 @@ class Push2D(Env):
         self,
         *,
         seed: int | None = None,
-        options: dict[str, Any] | None = None,
+        options: dict[str, Any] | None = None,  # noqa: ARG002
     ) -> tuple[Obs, dict[str, Any]]:
         """
         Reset the environment and return an initial observation.
@@ -137,23 +139,10 @@ class Push2D(Env):
         self.default_seed = seed if seed is not None else self.default_seed
         np.random.default_rng(self.default_seed)
 
-        if options is not None:
-            self.agent_params = options.get("agent_params", self.agent_params)
-            self.obstacles_params = options.get(
-                "obstacles_params",
-                self.obstacles_params,
-            )
-
         self.space.clear()
-
-        self.agent = Agent(params=self.agent_params)
-        self.space.add_agent(agent=self.agent)
-
-        self.obstacles = []
-        for obstacle_params in self.obstacles_params:
-            obstacle = Circle(params=obstacle_params)
-            self.obstacles.append(obstacle)
-            self.space.add_circle(circle=obstacle)
+        self.agent.add(to=self.space)
+        for obstacle in self.obstacles:
+            obstacle.add(to=self.space)
 
         self.space.add_segments()
         self.render()
@@ -186,29 +175,22 @@ class Push2D(Env):
         dict[str, Any]
             A dictionary containing the current object/environment information.
         """
-        space_parameters = SpaceParameters(
-            width=self.space.width,
-            height=self.space.height,
-            fps=self.space.fps,
-            color=self.space.color,
-        )
-        agent_parameters = CircleParameters(
-            radius=self.agent.params.radius,
-            position=self.agent.body.position,
-            color=self.agent.params.color,
-            velocity=self.agent_params.velocity,
-        )
-        obstacles_parameters = []
-        for obstacle in self.obstacles:
-            obstacle_parameters = CircleParameters(
-                radius=obstacle.params.radius,
-                position=obstacle.body.position,
-                color=obstacle.params.color,
-                velocity=obstacle.body.velocity,
-            )
-            obstacles_parameters.append(obstacle_parameters)
-        return {
-            "space": space_parameters,
-            "agent": agent_parameters,
-            "obstacles": obstacles_parameters,
-        }
+        return {"agent": self.agent, "obstacles": self.obstacles}
+
+    @classmethod
+    def from_yaml(cls, path: Path | str) -> Push2D:
+        """
+        Initialize the environment from a YAML file.
+
+        Parameters
+        ----------
+        path : str or Path
+            Path to the YAML file.
+
+        Returns
+        -------
+        Push2D
+            An instance of the environment.
+        """
+        config = OmegaConf.load(path)
+        return instantiate(config=config)

@@ -1,0 +1,49 @@
+space:
+  _target_: push_2d.component.Space
+  width: 300
+  height: 225
+  fps: 15
+  color:
+    - 255
+    - 255
+    - 255
+
+agent:
+  _target_: push_2d.component.Agent
+  radius: 20
+  position:
+    _target_: pymunk.Vec2d
+    x: 150
+    y: 110
+  velocity: 100
+  color:
+    - 0
+    - 0
+    - 255
+    - 255
+
+obstacles:
+  -
+    _target_: push_2d.component.Circle
+    radius: 30
+    position:
+      _target_: pymunk.Vec2d
+      x: 50
+      y: 50
+    color:
+      - 255
+      - 0
+      - 0
+      - 255
+  -
+    _target_: push_2d.component.Circle
+    radius: 30
+    position:
+      _target_: pymunk.Vec2d
+      x: 250
+      y: 175
+    color:
+      - 0
+      - 255
+      - 0
+      - 255
