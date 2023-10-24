@@ -20,20 +20,10 @@ __all__ = ["ArrowKeyAgentOperator"]
 class ArrowKeyAgentOperator(Wrapper):
     """Wrapper to move the agent by arrow keys."""
 
-    def __init__(self, env: Push2D, fps: int) -> None:
-        """
-        Initialize Wrapper.
-
-        Parameters
-        ----------
-        env : Push2D
-            `Push2D` environment instance.
-        fps : int
-            operating fps.
-            It should be equal to `Push2D.space.fps`.
-        """
+    def __init__(self, env: Push2D) -> None:
+        """Initialize Wrapper."""
         super().__init__(env=env)
-        self.fps = fps
+        fps = env.space.fps
         pygame.key.set_repeat(1000 // fps, 1000 // fps)
 
     @property
@@ -71,8 +61,8 @@ class ArrowKeyAgentOperator(Wrapper):
 
 
 class Saver(ArrowKeyAgentOperator):
-    def __init__(self, env: Push2D, fps: int, seq_len: float) -> None:
-        super().__init__(env=env, fps=fps)
+    def __init__(self, env: Push2D, seq_len: float) -> None:
+        super().__init__(env=env)
         self.action_list: list[Act] = []
         self.observation_list: list[Obs] = []
         self.seq_len = seq_len
