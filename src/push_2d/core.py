@@ -16,7 +16,7 @@ from .reward import AbstractRewardFactory
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from .component import Agent, Circle, Space, Wall
+    from .component import Agent, Circle, Segment, Space
     from .types import Act, Obs
 
 
@@ -45,7 +45,7 @@ class Push2D(Env):
         space: Space,
         agent: Agent,
         obstacles: list[Circle],
-        segments: list[Wall],
+        segments: list[Segment],
         reward_factory: type[AbstractRewardFactory] = AbstractRewardFactory,
     ) -> None:
         """Initialize the environment."""

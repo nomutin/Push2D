@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import dataclasses
-
 import pygame
 import pymunk
 import pymunk.pygame_util
@@ -11,39 +9,23 @@ from pygame import Color
 from pymunk import Vec2d
 
 
-@dataclasses.dataclass
-class Circle:
-    """
-    A class to represent a circle object with physics properties.
+class Circle(pymunk.Circle):
+    """A class to represent a circle object with physics properties."""
 
-    Methods
-    -------
-    __post_init__()
-        This method is called after the object has been initialized
-        and creates a pymunk physics body and shape for the circle with a
-        given position, radius, and color.
-    """
-
-    radius: int
-    position: Vec2d
-    color: list[int]
-    velocity: int = 0
-
-    def __post_init__(self) -> None:
+    def __init__(
+        self,
+        radius: int,
+        position: Vec2d,
+        color: Color,
+    ) -> None:
         """Create Body and Shape for the circle and set its properties."""
-        self._setup_body()
-        self._setup_shape()
-
-    def _setup_body(self) -> None:
-        self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
-        self.body.position = self.position
-
-    def _setup_shape(self) -> None:
-        self.shape = pymunk.Circle(self.body, self.radius)
-        self.shape.mass = 1.0
-        self.shape.color = self.color
-        self.shape.friction = 0.7
-        self.shape.elasticity = 0
+        body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
+        body.position = position
+        super().__init__(body=body, radius=radius)
+        self.mass = 1.0
+        self.color = color
+        self.friction = 0.7
+        self.elasticity = 0
 
     def add(self, to: Space) -> Space:
         """
@@ -56,7 +38,7 @@ class Circle:
         to : Space
             The space to add the circle to.
         """
-        to.add(self.body, self.shape)
+        to.add(self.body, self)
 
         static_body = to.static_body
 
@@ -72,38 +54,33 @@ class Circle:
         return to
 
 
-@dataclasses.dataclass
-class Agent:
+class Agent(pymunk.Circle):
     """A class to represent the agent with physics properties."""
 
-    radius: int
-    position: Vec2d
-    color: Color
-    velocity: int = 0
-
-    def __post_init__(self) -> None:
-        """Create body/shape/pivot/gear for the agent."""
-        self.velocity = self.velocity
+    def __init__(
+        self,
+        radius: int,
+        position: Vec2d,
+        color: Color,
+        velocity: int = 0,
+    ) -> None:
+        """Create Body and Shape for the agent and set its properties."""
+        body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
+        body.position = position
+        super().__init__(body, radius)
+        self.color = color
+        self.position = position
+        self.velocity = velocity
+        self.mass = 10
+        self.friction = 0.7
+        self.elasticity = 0
         self._setup_control_body()
-        self._setup_body()
-        self._setup_shape()
         self._setup_pivot()
         self._setup_gear()
 
     def _setup_control_body(self) -> None:
         self.control_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
         self.control_body.position = self.position
-
-    def _setup_body(self) -> None:
-        self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
-        self.body.position = self.position
-
-    def _setup_shape(self) -> None:
-        self.shape = pymunk.Circle(self.body, self.radius)
-        self.shape.color = self.color
-        self.shape.mass = 10
-        self.shape.friction = 0.7
-        self.shape.elasticity = 0
 
     def _setup_pivot(self) -> None:
         self.pivot = pymunk.PivotJoint(
@@ -123,38 +100,33 @@ class Agent:
 
     def add(self, to: Space) -> Space:
         """Add an agent to the simulation space."""
-        to.add(
-            self.control_body,
-            self.body,
-            self.shape,
-            self.pivot,
-            self.gear,
-        )
+        to.add(self.control_body, self.body, self, self.pivot, self.gear)
         return to
 
 
-@dataclasses.dataclass
-class Wall:
+class Segment(pymunk.Segment):
     """A class to represent a wall with physics properties."""
 
-    start_x: int
-    start_y: int
-    end_x: int
-    end_y: int
-    radius: int
-    color: Color
+    def __init__(
+        self,
+        start_position: Vec2d,
+        end_position: Vec2d,
+        radius: int,
+        color: Color,
+    ) -> None:
+        """Create Body and Shape for the wall and set its properties."""
+        super().__init__(
+            body=pymunk.Body(body_type=pymunk.Body.STATIC),
+            a=start_position,
+            b=end_position,
+            radius=radius,
+        )
+        self.color = color
+        self.elasticity = 1.0
 
     def add(self, to: Space) -> Space:
         """Add a wall to the simulation space."""
-        wall = pymunk.Segment(
-            body=to.static_body,
-            a=(self.start_x, self.start_y),
-            b=(self.end_x, self.end_y),
-            radius=self.radius,
-        )
-        wall.elasticity = 1.0
-        wall.color = pygame.Color(self.color)
-        to.add(wall)
+        to.add(self.body, self)
         return to
 
 
@@ -179,7 +151,7 @@ class Space(pymunk.Space):
         width: int,
         height: int,
         fps: int,
-        color: list[int],
+        color: Color,
     ) -> None:
         """
         Initialize Space.

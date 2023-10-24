@@ -1,7 +1,7 @@
 space:
   _target_: push_2d.component.Space
   width: 300
-  height: 225
+  height: 300
   fps: 15
   color:
     _target_: pygame.Color
@@ -13,8 +13,8 @@ agent:
   radius: 20
   position:
     _target_: pymunk.Vec2d
-    x: 150
-    y: 110
+    x: 50
+    y: 50
   velocity: 100
   color:
     _target_: pygame.Color
@@ -47,50 +47,34 @@ obstacles:
 
 segments:
   -
-    _target_: push_2d.component.Segment
-    start_position:
-      _target_: pymunk.Vec2d
-      x: 0
-      y: 1
-    end_position:
-      _target_: pymunk.Vec2d
-      x: ${space.width}
-      y: 1
+    _target_: push_2d.component.Wall
+    start_x: 0
+    start_y: 1
+    end_x: ${space.width}
+    end_y: 1 
     radius: 10
     color: ${space.color}
   -
-    _target_: push_2d.component.Segment
-    start_position:
-      _target_: pymunk.Vec2d
-      x: 1
-      y: 0
-    end_position:
-      _target_: pymunk.Vec2d
-      x: 1
-      y: ${space.height}
+    _target_: push_2d.component.Wall
+    start_x: 1
+    start_y: 0
+    end_x: 1
+    end_y: ${space.height}
     radius: 10
     color: ${space.color}
   -
-    _target_: push_2d.component.Segment
-    start_position:
-      _target_: pymunk.Vec2d
-      x: ${space.width}
-      y: 0
-    end_position:
-      _target_: pymunk.Vec2d
-      x: ${space.width}
-      y: ${space.height}
+    _target_: push_2d.component.Wall
+    start_x: ${space.width}
+    start_y: 0
+    end_x: ${space.width}
+    end_y: ${space.height}
     radius: 10
     color: ${space.color}
   -
-    _target_: push_2d.component.Segment
-    start_position:
-      _target_: pymunk.Vec2d
-      x: 0
-      y: ${space.height}
-    end_position:
-      _target_: pymunk.Vec2d
-      x: ${space.width}
-      y: ${space.height}
+    _target_: push_2d.component.Wall
+    start_x: 0
+    start_y: ${space.height}
+    end_x: ${space.width}
+    end_y: ${space.height}
     radius: 10
     color: ${space.color}
