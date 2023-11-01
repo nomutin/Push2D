@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -14,8 +15,6 @@ from pymunk import Vec2d
 from .reward import AbstractRewardFactory
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from .component import Agent, Circle, Segment, Space
     from .types import Act, Obs
 
@@ -181,20 +180,21 @@ class Push2D(Env):
         return {"agent": self.agent, "obstacles": self.obstacles}
 
     @classmethod
-    def from_yaml(cls, path: Path | str) -> Push2D:
+    def from_yaml(cls, env_name: str) -> Push2D:
         """
         Initialize the environment from a YAML file.
 
         Parameters
         ----------
-        path : str or Path
-            Path to the YAML file.
+        env_name : str
+            Name of YAML file.
 
         Returns
         -------
         Push2D
             An instance of the environment.
         """
+        path = Path(__file__).parent / "environments" / f"{env_name}.yaml"
         config = OmegaConf.load(path)
         agent = instantiate(config.agent)
         space = instantiate(config.space)
