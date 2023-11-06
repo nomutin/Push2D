@@ -181,3 +181,9 @@ class Space(pymunk.Space):
         pygame.display.flip()
         self.step(1 / self.fps)
         self.clock.tick(self.fps)
+
+    def accelerated_render(self) -> None:
+        """High speed render(for replay)."""
+        self.screen.fill(self.color)
+        self.debug_draw(self.draw_options)
+        self.step(1 / self.fps)

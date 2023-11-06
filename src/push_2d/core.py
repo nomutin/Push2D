@@ -55,6 +55,7 @@ class Push2D(Env):
         self.segments = segments
         self.reward_factory = reward_factory()
         self.default_seed = 42
+        self._acceleration = False
         self.reset(seed=self.default_seed)
 
     def render(self, _: str = "") -> None:
@@ -64,7 +65,10 @@ class Push2D(Env):
         This is not explicitly called,
         `step()` or `reset()` will always call it.
         """
-        self.space.render()
+        if self.acceleration:
+            self.space.accelerated_render()
+        else:
+            self.space.render()
 
     def step(
         self,
@@ -209,3 +213,13 @@ class Push2D(Env):
             obstacles=obstacles,
             segments=segments,
         )
+
+    @property
+    def acceleration(self) -> bool:
+        """Return the acceleration flag."""
+        return self._acceleration
+
+    @acceleration.setter
+    def acceleration(self, flag: bool) -> None:
+        """Set the acceleration flag."""
+        self._acceleration = flag
