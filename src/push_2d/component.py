@@ -8,17 +8,15 @@ import pymunk.pygame_util
 from pygame import Color
 from pymunk import Vec2d
 
+from .types import Resettable
 
-class Circle(pymunk.Circle):
+
+class Circle(pymunk.Circle, Resettable):
     """A class to represent a circle object with physics properties."""
 
-    def __init__(
-        self,
-        radius: int,
-        position: Vec2d,
-        color: Color,
-    ) -> None:
+    def __init__(self, radius: int, position: Vec2d, color: Color) -> None:
         """Create Body and Shape for the circle and set its properties."""
+        Resettable.__init__(self, radius, position, color)
         body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         body.position = position
         super().__init__(body=body, radius=radius)
@@ -28,16 +26,7 @@ class Circle(pymunk.Circle):
         self.elasticity = 0
 
     def add(self, to: Space) -> Space:
-        """
-        Add a `Circle` to the simulation space.
-
-        And Connect it to a pivot and gear joint for more realistic physics.
-
-        Parameters
-        ----------
-        to : Space
-            The space to add the circle to.
-        """
+        """Add a `Circle` to the simulation space."""
         to.add(self.body, self)
 
         static_body = to.static_body
@@ -54,7 +43,7 @@ class Circle(pymunk.Circle):
         return to
 
 
-class Agent(pymunk.Circle):
+class Agent(pymunk.Circle, Resettable):
     """A class to represent the agent with physics properties."""
 
     def __init__(
@@ -65,6 +54,7 @@ class Agent(pymunk.Circle):
         velocity: int = 0,
     ) -> None:
         """Create Body and Shape for the agent and set its properties."""
+        Resettable.__init__(self, radius, position, color, velocity)
         body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         body.position = position
         super().__init__(body, radius)
@@ -104,7 +94,7 @@ class Agent(pymunk.Circle):
         return to
 
 
-class Segment(pymunk.Segment):
+class Segment(pymunk.Segment, Resettable):
     """A class to represent a wall with physics properties."""
 
     def __init__(
@@ -115,6 +105,7 @@ class Segment(pymunk.Segment):
         color: Color,
     ) -> None:
         """Create Body and Shape for the wall and set its properties."""
+        Resettable.__init__(self, start_position, end_position, radius, color)
         super().__init__(
             body=pymunk.Body(body_type=pymunk.Body.STATIC),
             a=start_position,
@@ -190,3 +181,9 @@ class Space(pymunk.Space):
         pygame.display.flip()
         self.step(1 / self.fps)
         self.clock.tick(self.fps)
+
+    def accelerated_render(self) -> None:
+        """High speed render(for replay)."""
+        self.screen.fill(self.color)
+        self.debug_draw(self.draw_options)
+        self.step(1 / self.fps)
