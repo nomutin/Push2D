@@ -141,10 +141,13 @@ class Push2D(Env):
         np.random.default_rng(self.default_seed)
 
         self.space.clear()
+        self.agent.reset()
         self.agent.add(to=self.space)
         for obstacle in self.obstacles:
+            obstacle.reset()
             obstacle.add(to=self.space)
         for segment in self.segments:
+            segment.reset()
             segment.add(to=self.space)
 
         self.render()
