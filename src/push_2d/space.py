@@ -29,7 +29,7 @@ class Space(pymunk.Space):
         width: int,
         height: int,
         fps: int,
-        color: pygame.Color,
+        color: str,
     ) -> None:
         """
         Initialize Space.
@@ -42,7 +42,7 @@ class Space(pymunk.Space):
         self.width = width
         self.height = height
         self.fps = fps
-        self.color = color
+        self.color = pygame.Color(color)
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
         self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)

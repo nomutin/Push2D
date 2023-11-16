@@ -1,1 +1,1 @@
-"""Component(kinematic/static) of push_2d."""
+"""Component(dynamic/static) of push_2d."""

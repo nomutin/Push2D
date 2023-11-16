@@ -2,39 +2,37 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
+import pygame
 import pymunk
 
 from .component.meta import ResettableComponentMeta
-
-if TYPE_CHECKING:
-    import pygame
 
 
 class Agent(pymunk.Circle, ResettableComponentMeta):
     """A class to represent the agent with physics properties."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         radius: int,
-        position: pymunk.Vec2d,
-        color: pygame.Color,
+        x_position: int,
+        y_position: int,
+        color: str,
         velocity: int = 0,
     ) -> None:
         """Create Body and Shape for the agent and set its properties."""
         ResettableComponentMeta.__init__(
             self,
             radius,
-            position,
+            x_position,
+            y_position,
             color,
             velocity,
         )
         body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
-        body.position = position
+        body.position = pymunk.Vec2d(x_position, y_position)
         super().__init__(body, radius)
-        self.color = color
-        self.position = position
+        self.color = pygame.Color(color)
+        self.position = pymunk.Vec2d(x_position, y_position)
         self.velocity = velocity
         self.mass = 10
         self.friction = 0.7
