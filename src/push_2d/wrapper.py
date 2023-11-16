@@ -10,7 +10,7 @@ import pygame
 from gymnasium import Wrapper
 
 if TYPE_CHECKING:
-    from .core import Push2D
+    from .environment import Push2D
     from .types import Act, Obs
 
 

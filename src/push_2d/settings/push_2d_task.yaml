@@ -1,6 +1,6 @@
 space:
   _target_: push_2d.component.Space
-  width: 300
+  width: 140
   height: 300
   fps: 15
   color:
@@ -22,17 +22,6 @@ agent:
       - blue
 
 obstacles:
-  -
-    _target_: push_2d.component.Circle
-    radius: 30
-    position:
-      _target_: pymunk.Vec2d
-      x: 50
-      y: 50
-    color: 
-      _target_: pygame.Color
-      _args_:
-        - red
   -
     _target_: push_2d.component.Circle
     radius: 30
