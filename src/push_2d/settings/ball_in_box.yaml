@@ -6,7 +6,7 @@ space:
   color: white
 
 agent:
-  _target_: push_2d.agent.Agent
+  _target_: push_2d.agent.CircleAgent
   radius: 15
   x_position: 112
   y_position: 205

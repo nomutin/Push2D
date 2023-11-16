@@ -2,48 +2,61 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import pygame
 import pymunk
 
 from .component.meta import ResettableComponentMeta
 
 
-class Agent(pymunk.Circle, ResettableComponentMeta):
+class Agent(ResettableComponentMeta):
     """A class to represent the agent with physics properties."""
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
-        radius: int,
         x_position: int,
         y_position: int,
         color: str,
-        velocity: int = 0,
+        velocity: int,
+        **kwargs: Any,
     ) -> None:
         """Create Body and Shape for the agent and set its properties."""
         ResettableComponentMeta.__init__(
             self,
-            radius,
             x_position,
             y_position,
             color,
             velocity,
+            **kwargs,
         )
-        body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
-        body.position = pymunk.Vec2d(x_position, y_position)
-        super().__init__(body, radius)
+        self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
+        self.body.position = pymunk.Vec2d(x_position, y_position)
         self.color = pygame.Color(color)
-        self.position = pymunk.Vec2d(x_position, y_position)
         self.velocity = velocity
-        self.mass = 10
-        self.friction = 0.7
-        self.elasticity = 0
+
         self._setup_control_body()
         self._setup_pivot()
         self._setup_gear()
 
+    @property
+    def shape(self) -> pymunk.Shape:
+        """Return the shape of the agent."""
+        return self._shape
+
+    @shape.setter
+    def shape(self, shape: pymunk.Shape) -> None:
+        """Set the shape of the agent."""
+        shape.mass = 10
+        shape.friction = 0.7
+        shape.elasticity = 0
+        shape.color = self.color
+        shape.position = self.body.position
+        self._shape = shape
+
     def _setup_control_body(self) -> None:
         self.control_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
-        self.control_body.position = self.position
+        self.control_body.position = self.body.position
 
     def _setup_pivot(self) -> None:
         self.pivot = pymunk.PivotJoint(
@@ -63,5 +76,27 @@ class Agent(pymunk.Circle, ResettableComponentMeta):
 
     def add(self, to: pymunk.Space) -> pymunk.Space:
         """Add an agent to the simulation space."""
-        to.add(self.control_body, self.body, self, self.pivot, self.gear)
+        to.add(self.control_body, self.body, self.shape, self.pivot, self.gear)
         return to
+
+
+class CircleAgent(Agent):
+    """Agent with a circle shape."""
+
+    def __init__(  # noqa: PLR0913
+        self,
+        x_position: int,
+        y_position: int,
+        color: str,
+        velocity: int,
+        radius: int,
+    ) -> None:
+        """Create shape as `pymunk.Circle`."""
+        super().__init__(
+            x_position,
+            y_position,
+            color,
+            velocity,
+            radius=radius,
+        )
+        self.shape = pymunk.Circle(self.body, radius)

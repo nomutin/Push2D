@@ -49,7 +49,7 @@ class ArrowKeyAgentOperator(Wrapper):
         for event in pygame.event.get():
             key = getattr(event, "key", 999)
             if key == pygame.K_q:
-                self.env.close()
+                self.env.close()  # type: ignore
             if key == pygame.K_r:
                 self.reset()
             if key == pygame.K_s:
