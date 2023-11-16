@@ -8,16 +8,10 @@
 
 ## 🗂️ Usage
 
-### ⚙️ Install
-
-```shell
-poetry add git+https://github.com/nomutin/Push-2D.git
-```
-
 ### 🏋️‍♀️ Gymnasium API
 
 ```python
-from push_2d.core import Push2D
+from push_2d.environment import Push2D
 
 env = Push2D.from_yaml("")
 env.reset(seed=42)
@@ -32,7 +26,7 @@ for _ in range(1000):
 ```python
 import numpy as np
 
-from push_2d.core import Push2D
+from push_2d.environment import Push2D
 from push_2d.wrapper import ArrowKeyAgentOperator
 
 env = Push2D.from_yaml("")
@@ -48,7 +42,7 @@ while True:
 ### 📀 Saver API
 
 ```python
-from push_2d.core import Push2D
+from push_2d.environment import Push2D
 from push_2d.wrapper import Saver
 
 env = Push2D.from_yaml("")

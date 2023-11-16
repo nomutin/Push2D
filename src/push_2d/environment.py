@@ -15,7 +15,9 @@ from pymunk import Vec2d
 from .reward import AbstractRewardFactory
 
 if TYPE_CHECKING:
-    from .component import Agent, Circle, Segment, Space
+    from .agent import Agent
+    from .component.meta import ResettableComponentMeta
+    from .space import Space
     from .types import Act, Obs
 
 
@@ -39,20 +41,18 @@ class Push2D(Env):
     observation_space = spaces.Box(-np.inf, np.inf, shape=(3,))
     action_space = spaces.MultiDiscrete([2, 2, 2, 2])
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         space: Space,
         agent: Agent,
-        obstacles: list[Circle],
-        segments: list[Segment],
+        components: list[ResettableComponentMeta],
         reward_factory: type[AbstractRewardFactory] = AbstractRewardFactory,
     ) -> None:
         """Initialize the environment."""
         super().__init__()
         self.space = space
         self.agent = agent
-        self.obstacles = obstacles
-        self.segments = segments
+        self.components = components
         self.reward_factory = reward_factory()
         self.default_seed = 42
         self._acceleration = False
@@ -147,12 +147,9 @@ class Push2D(Env):
         self.space.clear()
         self.agent.reset()
         self.agent.add(to=self.space)
-        for obstacle in self.obstacles:
-            obstacle.reset()
-            obstacle.add(to=self.space)
-        for segment in self.segments:
-            segment.reset()
-            segment.add(to=self.space)
+        for component in self.components:
+            component.reset()
+            component.add(to=self.space)
 
         self.render()
         observation = self._get_observation()
@@ -184,16 +181,16 @@ class Push2D(Env):
         dict[str, Any]
             A dictionary containing the current object/environment information.
         """
-        return {"agent": self.agent, "obstacles": self.obstacles}
+        return {"agent": self.agent, "obstacles": self.components}
 
     @classmethod
-    def from_yaml(cls, env_name: str) -> Push2D:
+    def from_yaml(cls, setting_name: str) -> Push2D:
         """
         Initialize the environment from a YAML file.
 
         Parameters
         ----------
-        env_name : str
+        setting_name : str
             Name of YAML file.
 
         Returns
@@ -201,17 +198,15 @@ class Push2D(Env):
         Push2D
             An instance of the environment.
         """
-        path = Path(__file__).parent / "environments" / f"{env_name}.yaml"
+        path = Path(__file__).parent / "settings" / f"{setting_name}.yaml"
         config = OmegaConf.load(path)
         agent = instantiate(config.agent)
         space = instantiate(config.space)
-        obstacles = [instantiate(obstacle) for obstacle in config.obstacles]
-        segments = [instantiate(segment) for segment in config.segments]
+        components = [instantiate(c) for c in config.components]
         return cls(
             agent=agent,
             space=space,
-            obstacles=obstacles,
-            segments=segments,
+            components=components,
         )
 
     @property

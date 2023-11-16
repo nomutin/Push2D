@@ -1,0 +1,60 @@
+space:
+  _target_: push_2d.space.Space
+  width: 300
+  height: 225
+  fps: 15
+  color: white
+
+agent:
+  _target_: push_2d.agent.Agent
+  radius: 10
+  x_position: 150
+  y_position: 110
+  velocity: 100
+  color: blue
+
+components:
+  -
+    _target_: push_2d.component.dynamic.Circle
+    radius: 30
+    x_position: 50
+    y_position: 50
+    color: red
+  -
+    _target_: push_2d.component.dynamic.Circle
+    radius: 30
+    x_position: 250
+    y_position: 175
+    color: green
+  -
+    _target_: push_2d.component.static.Segment
+    x_start_position: 0
+    y_start_position: 0
+    x_end_position: ${space.width}
+    y_end_position: 0
+    color: ${space.color}
+    radius: 10
+  -
+    _target_: push_2d.component.static.Segment
+    x_start_position: 0
+    y_start_position: 0
+    x_end_position: 0
+    y_end_position: ${space.height}
+    color: ${space.color}
+    radius: 10
+  -
+    _target_: push_2d.component.static.Segment
+    x_start_position: ${space.width}
+    y_start_position: 0
+    x_end_position: ${space.width}
+    y_end_position: ${space.height}
+    color: ${space.color}
+    radius: 10
+  -
+    _target_: push_2d.component.static.Segment
+    x_start_position: 0
+    y_start_position: ${space.height}
+    x_end_position: ${space.width}
+    y_end_position: ${space.height}
+    color: ${space.color}
+    radius: 10
