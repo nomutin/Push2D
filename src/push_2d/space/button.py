@@ -71,7 +71,10 @@ class ButtonSpace(Space):
                 surface=self.screen,
                 color=color,
                 rect=pygame.Rect(
-                    left, 0, self.light_size // 2, self.light_size,
+                    left,
+                    0,
+                    self.light_size // 2,
+                    self.light_size,
                 ),
             )
 
