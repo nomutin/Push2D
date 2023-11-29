@@ -23,12 +23,18 @@ def sub(x: int, y: int) -> int:
     return x - y
 
 
+def half(x: int) -> int:
+    """Divide x by 2."""
+    return x // 2
+
+
 def load_config(setting_name: str) -> DictConfig:
     """Convert model config `.yaml` to `Dictconfig` with custom resolvers."""
     try:
         OmegaConf.register_new_resolver("add", add)
         OmegaConf.register_new_resolver("mul", mul)
         OmegaConf.register_new_resolver("sub", sub)
+        OmegaConf.register_new_resolver("half", half)
     except ValueError:
         pass
 

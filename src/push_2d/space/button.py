@@ -66,11 +66,13 @@ class ButtonSpace(Space):
     def render_light(self) -> None:
         """Render the light in the space."""
         for i, color in enumerate(self.colors):
-            left = i * self.light_size
+            left = (i * self.light_size) // 2
             pygame.draw.rect(
                 surface=self.screen,
                 color=color,
-                rect=pygame.Rect(left, 0, self.light_size, self.light_size),
+                rect=pygame.Rect(
+                    left, 0, self.light_size // 2, self.light_size
+                ),
             )
 
     def clear(self) -> None:

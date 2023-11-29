@@ -1,4 +1,6 @@
 space_size: 100
+button_size: 20
+thickness: 2
 
 space:
   _target_: push_2d.space.button.ButtonSpace
@@ -6,56 +8,98 @@ space:
   height: ${space_size}
   fps: 15
   color: white
-  light_size: 20
+  light_size: ${button_size}
   buttons:
     -
       _target_: push_2d.space.button.Button
       x: 0
-      y: 20
-      radius: 20
+      y: ${button_size}
+      radius: ${button_size}
       color: red
+    -
+      _target_: push_2d.space.button.Button
+      x: ${sub:${space_size},${button_size}}
+      y: ${button_size}
+      radius: ${button_size}
+      color: blue
+    -
+      _target_: push_2d.space.button.Button
+      x: 0
+      y: ${sub:${space_size},${button_size}}
+      radius: ${button_size}
+      color: green
+    -
+      _target_: push_2d.space.button.Button
+      x: ${sub:${space_size},${button_size}}
+      y: ${sub:${space_size},${button_size}}
+      radius: ${button_size}
+      color: yellow
 
 agent:
   _target_: push_2d.component.agent.CircleAgent
-  radius: 10
-  x_position: 50
-  y_position: 85
+  radius: ${half:${button_size}}
+  x_position: ${half:${space_size}}
+  y_position: ${sub:${space_size},${button_size}}
   velocity: 100
   color: black
 
 components:
   -
     _target_: push_2d.component.static.Segment
-    x_start_position: 10
-    y_start_position: 20
+    x_start_position: ${half:${button_size}}
+    y_start_position: ${button_size}
     x_end_position: 0
-    y_end_position: 30
+    y_end_position: ${add:${button_size},${half:${button_size}}}
     color: red
-    radius: 2
-  -
+    radius: ${thickness}
+  - 
     _target_: push_2d.component.static.Segment
-    x_start_position: 0
-    y_start_position: 20
+    x_start_position: ${sub:${space_size},${half:${button_size}}}
+    y_start_position: ${button_size}
     x_end_position: ${space_size}
-    y_end_position: 20
-    color: black
-    radius: 2
+    y_end_position: ${add:${button_size},${half:${button_size}}}
+    color: blue
+    radius: ${thickness}
   -
     _target_: push_2d.component.static.Segment
     x_start_position: 0
-    y_start_position: 20
-    x_end_position: 0
+    y_start_position: ${sub:${space_size},${half:${button_size}}}
+    x_end_position: ${half:${button_size}}
     y_end_position: ${space_size}
-    color: black
-    radius: 2
+    color: green
+    radius: ${thickness}
   -
     _target_: push_2d.component.static.Segment
     x_start_position: ${space_size}
-    y_start_position: 20
+    y_start_position: ${sub:${space_size},${half:${button_size}}}
+    x_end_position: ${sub:${space_size},${half:${button_size}}}
+    y_end_position: ${space_size}
+    color: yellow
+    radius: ${thickness}
+  -
+    _target_: push_2d.component.static.Segment
+    x_start_position: 0
+    y_start_position: ${button_size}
+    x_end_position: ${space_size}
+    y_end_position: ${button_size}
+    color: black
+    radius: ${thickness}
+  -
+    _target_: push_2d.component.static.Segment
+    x_start_position: 0
+    y_start_position: ${button_size}
+    x_end_position: 0
+    y_end_position: ${space_size}
+    color: black
+    radius: ${thickness}
+  -
+    _target_: push_2d.component.static.Segment
+    x_start_position: ${space_size}
+    y_start_position: ${button_size}
     x_end_position: ${space_size}
     y_end_position: ${space_size}
     color: black
-    radius: 2
+    radius: ${thickness}
   -
     _target_: push_2d.component.static.Segment
     x_start_position: 0
@@ -63,12 +107,12 @@ components:
     x_end_position: ${space_size}
     y_end_position: ${space_size}
     color: black
-    radius: 2
+    radius: ${thickness}
   -
     _target_: push_2d.component.static.Segment
     x_start_position: 0
-    y_start_position: 20
+    y_start_position: ${button_size}
     x_end_position: ${space_size}
-    y_end_position: 20
+    y_end_position: ${button_size}
     color: black
-    radius: 2
+    radius: ${thickness}
