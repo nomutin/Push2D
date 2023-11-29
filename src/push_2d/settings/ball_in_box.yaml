@@ -1,12 +1,12 @@
 space:
-  _target_: push_2d.space.Space
+  _target_: push_2d.space.meta.Space
   width: 225
   height: 225
   fps: 15
   color: white
 
 agent:
-  _target_: push_2d.agent.CircleAgent
+  _target_: push_2d.component.agent.CircleAgent
   radius: 15
   x_position: 112
   y_position: 205

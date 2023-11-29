@@ -1,5 +1,4 @@
-"""Define extension of `pymunk.Space` classes."""
-
+"""Base class for 2D space simulation space."""
 
 from __future__ import annotations
 
@@ -56,7 +55,7 @@ class Space(pymunk.Space):
 
     def render(self) -> None:
         """
-        Apply one envornment step.
+        Apply one environment step.
 
         includes:
             - One step of the physics simulation

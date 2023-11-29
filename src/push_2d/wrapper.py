@@ -11,10 +11,7 @@ from gymnasium import Wrapper
 
 if TYPE_CHECKING:
     from .environment import Push2D
-    from .types import Act, Obs
-
-
-__all__ = ["ArrowKeyAgentOperator"]
+    from .utils.types import Act, Obs
 
 
 class ArrowKeyAgentOperator(Wrapper):
@@ -61,7 +58,10 @@ class ArrowKeyAgentOperator(Wrapper):
 
 
 class Saver(ArrowKeyAgentOperator):
+    """A class that extends ArrowKeyAgentOperator to save states."""
+
     def __init__(self, env: Push2D, seq_len: float) -> None:
+        """Initialize the Saver with environment and sequence length."""
         super().__init__(env=env)
         self.action_list: list[Act] = []
         self.observation_list: list[Obs] = []
@@ -73,6 +73,7 @@ class Saver(ArrowKeyAgentOperator):
         seed: int | None = None,
         options: dict[str, Any] | None = None,
     ) -> tuple[Obs, dict[str, Any]]:
+        """Reset the environment and clear the action and observation lists."""
         outputs = super().reset(seed=seed, options=options)
         self.action_list.clear()
         self.observation_list.clear()
@@ -80,6 +81,7 @@ class Saver(ArrowKeyAgentOperator):
         return outputs
 
     def listen(self) -> Act:
+        """Listen for actions, perform them, and save states."""
         action = super().listen()
         if not np.all(action == 0):
             observation, *_ = self.step(action)
@@ -92,6 +94,7 @@ class Saver(ArrowKeyAgentOperator):
         return action
 
     def save(self) -> None:
+        """Save the actions and observations to the data directory."""
         save_directory = Path("data")
         save_directory.mkdir(exist_ok=True)
         actions = np.stack(self.action_list, axis=0)

@@ -2,23 +2,22 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pygame
 from gymnasium import Env, spaces
 from hydra.utils import instantiate
-from omegaconf import OmegaConf
 from pymunk import Vec2d
 
 from .reward import AbstractRewardFactory
+from .utils.config import load_config
 
 if TYPE_CHECKING:
-    from .agent import Agent
+    from .component.agent import Agent
     from .component.meta import ResettableComponentMeta
-    from .space import Space
-    from .types import Act, Obs
+    from .space.meta import Space
+    from .utils.types import Act, Obs
 
 
 class Push2D(Env):
@@ -198,8 +197,7 @@ class Push2D(Env):
         Push2D
             An instance of the environment.
         """
-        path = Path(__file__).parent / "settings" / f"{setting_name}.yaml"
-        config = OmegaConf.load(path)
+        config = load_config(setting_name=setting_name)
         agent = instantiate(config.agent)
         space = instantiate(config.space)
         components = [instantiate(c) for c in config.components]

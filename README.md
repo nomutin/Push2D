@@ -46,7 +46,7 @@ from push_2d.environment import Push2D
 from push_2d.wrapper import Saver
 
 env = Push2D.from_yaml("")
-saver = Saver(env=env, fps=RedAndGreen.SPACE.fps, seq_len=300)
+saver = Saver(env=env, seq_len=300)
 saver.reset(seed=42)
 
 while True:

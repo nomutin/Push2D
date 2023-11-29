@@ -6,7 +6,7 @@ space:
   color: white
 
 agent:
-  _target_: push_2d.agent.Agent
+  _target_: push_2d.component.agent.meta.Agent
   radius: 10
   x_position: 150
   y_position: 110
