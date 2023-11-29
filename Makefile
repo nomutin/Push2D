@@ -1,3 +1,6 @@
+clean:
+	rm -rf .mypy_cache/ .pytest_cache/ .ruff_cache data && find . -type d -name __pycache__ -exec rm -r {} +
+
 isort-format:
 	isort .
 

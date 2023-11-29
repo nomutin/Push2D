@@ -21,7 +21,7 @@ agent:
   x_position: 50
   y_position: 85
   velocity: 100
-  color: blue
+  color: black
 
 components:
   -
