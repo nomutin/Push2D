@@ -7,7 +7,7 @@ from typing import Any
 import pygame
 import pymunk
 
-from .component.meta import ResettableComponentMeta
+from .meta import ResettableComponentMeta
 
 
 class Agent(ResettableComponentMeta):

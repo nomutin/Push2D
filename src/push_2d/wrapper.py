@@ -11,10 +11,7 @@ from gymnasium import Wrapper
 
 if TYPE_CHECKING:
     from .environment import Push2D
-    from .types import Act, Obs
-
-
-__all__ = ["ArrowKeyAgentOperator"]
+    from .utils.types import Act, Obs
 
 
 class ArrowKeyAgentOperator(Wrapper):
