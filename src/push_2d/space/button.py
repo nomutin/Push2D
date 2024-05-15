@@ -43,6 +43,7 @@ class ButtonSpace(Space):
 
     def __init__(  # noqa: PLR0913
         self,
+        *,
         width: int,
         height: int,
         fps: int,

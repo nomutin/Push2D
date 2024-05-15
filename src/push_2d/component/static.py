@@ -1,3 +1,4 @@
+# ruff: noqa: PLR0913
 """Define static components."""
 
 import pygame
@@ -9,8 +10,9 @@ from .meta import ResettableComponentMeta
 class Segment(pymunk.Segment, ResettableComponentMeta):
     """A class to represent a wall with physics properties."""
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
+        *,
         x_start_position: int,
         y_start_position: int,
         x_end_position: int,

@@ -29,7 +29,7 @@ class ArrowKeyAgentOperator(Wrapper):
         return pygame.display.get_caption()[0]
 
     @window_caption.setter
-    def window_caption(self, caption: str) -> None:
+    def window_caption(self, caption: str) -> None:  # noqa: PLR6301
         """Set the caption of the window."""
         pygame.display.set_caption(caption)
 
@@ -46,7 +46,7 @@ class ArrowKeyAgentOperator(Wrapper):
         for event in pygame.event.get():
             key = getattr(event, "key", 999)
             if key == pygame.K_q:
-                self.env.close()  # type: ignore
+                self.env.close()  # type: ignore[no-untyped-call]
             if key == pygame.K_r:
                 self.reset()
             if key == pygame.K_s:

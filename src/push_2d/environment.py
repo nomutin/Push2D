@@ -12,15 +12,15 @@ from pymunk import Vec2d
 
 from .reward import AbstractRewardFactory
 from .utils.config import load_config
+from .utils.types import Act, Obs
 
 if TYPE_CHECKING:
     from .component.agent import Agent
     from .component.meta import ResettableComponentMeta
     from .space.meta import Space
-    from .utils.types import Act, Obs
 
 
-class Push2D(Env):
+class Push2D(Env[Obs, Act]):
     """
     The main Gymnasium class for implementing Play Data environments.
 
@@ -155,7 +155,7 @@ class Push2D(Env):
         info = self._get_info()
         return observation, info
 
-    def close(self) -> None:
+    def close(self) -> None:  # noqa: PLR6301
         """Close rendering `pygame` windows."""
         pygame.quit()
 

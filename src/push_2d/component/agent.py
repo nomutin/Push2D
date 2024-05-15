@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import pygame
 import pymunk
 
@@ -19,7 +17,7 @@ class Agent(ResettableComponentMeta):
         y_position: int,
         color: str,
         velocity: int,
-        **kwargs: Any,
+        **kwargs: str | int,
     ) -> None:
         """Create Body and Shape for the agent and set its properties."""
         ResettableComponentMeta.__init__(

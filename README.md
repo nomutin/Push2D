@@ -8,7 +8,7 @@
 
 ## 🗂️ Usage
 
-### 🏋️‍♀️ Gymnasium API
+### Gymnasium API
 
 ```python
 from push_2d.environment import Push2D
@@ -21,7 +21,7 @@ for _ in range(1000):
     observation, *_ = env.step(action=action)
 ```
 
-### ⌨️ Keyboard API
+### Keyboard API
 
 ```python
 import numpy as np
@@ -39,7 +39,7 @@ while True:
         env.step(action=action)
 ```
 
-### 📀 Saver API
+### Saver API
 
 ```python
 from push_2d.environment import Push2D
@@ -53,7 +53,7 @@ while True:
     saver.listen()
 ```
 
-## 📚 References
+## References
 
 - [Pymunk](http://www.pymunk.org/en/latest/)
 - [Gymnasium](https://github.com/Farama-Foundation/Gymnasium)

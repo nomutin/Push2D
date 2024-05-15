@@ -5,23 +5,47 @@
 #   pre: false
 #   features: []
 #   all-features: false
+#   with-sources: false
 
 -e file:.
 antlr4-python3-runtime==4.9.3
+    # via hydra-core
+    # via omegaconf
 cffi==1.16.0
+    # via pymunk
 cloudpickle==3.0.0
+    # via gymnasium
 farama-notifications==0.0.4
+    # via gymnasium
 gymnasium==0.29.1
+    # via push-2d
 hydra-core==1.3.2
+    # via push-2d
 importlib-metadata==6.8.0
+    # via gymnasium
 importlib-resources==6.1.0
+    # via hydra-core
 nptyping==2.5.0
+    # via push-2d
 numpy==1.24.4
+    # via gymnasium
+    # via nptyping
+    # via push-2d
 omegaconf==2.3.0
+    # via hydra-core
 packaging==23.2
+    # via hydra-core
 pycparser==2.21
+    # via cffi
 pygame==2.5.2
+    # via push-2d
 pymunk==6.5.1
+    # via push-2d
 pyyaml==6.0.1
+    # via omegaconf
 typing-extensions==4.8.0
+    # via gymnasium
+    # via nptyping
 zipp==3.17.0
+    # via importlib-metadata
+    # via importlib-resources
